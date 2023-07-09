@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1e3386f74e80298a2ea9c06d8b9ec18",
+    "identityHash": "ad3112205a05b70ddc0590a61ac53377",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER NOT NULL, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -54,7 +54,7 @@
             "fieldPath": "updateTs",
             "columnName": "updateTs",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "id",
@@ -74,7 +74,7 @@
       },
       {
         "tableName": "task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `week_day` TEXT NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER NOT NULL, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `week_day` TEXT NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "plantId",
@@ -104,7 +104,7 @@
             "fieldPath": "updateTs",
             "columnName": "update_ts",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "id",
@@ -148,7 +148,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1e3386f74e80298a2ea9c06d8b9ec18')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ad3112205a05b70ddc0590a61ac53377')"
     ]
   }
 }

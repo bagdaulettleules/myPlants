@@ -18,7 +18,7 @@ data class Plant(
     @ColumnInfo(name = "water_amount")
     val waterAmount: Int,
     val size: Size,
-    val updateTs: Date,
+    val updateTs: Date? = null,
     @PrimaryKey
     val id: Long? = null
 )

@@ -7,7 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.myplants.ui.components.Greeting
+import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myplants.feature_main.presentation.list.TasksListScreen
+import com.example.myplants.feature_main.presentation.list.TasksListViewModel
+import com.example.myplants.feature_main.presentation.util.Screen
 import com.example.myplants.ui.theme.MyPlantsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,12 +24,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyPlantsTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.surface
                 ) {
-                    Greeting("Android")
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.TasksList.route
+                    ) {
+
+                        composable(route = Screen.TasksList.route) {
+                            val viewModel = hiltViewModel<TasksListViewModel>()
+                            TasksListScreen(
+                                navController = navController,
+                                viewState = viewModel.state.value,
+                                onEvent = viewModel::onEvent
+                            )
+                        }
+
+                    }
                 }
             }
         }

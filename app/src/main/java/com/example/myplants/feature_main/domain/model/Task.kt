@@ -32,7 +32,7 @@ data class Task(
     @ColumnInfo(name = "is_done")
     val isDone: Boolean,
     @ColumnInfo(name = "update_ts")
-    val updateTs: Date,
+    val updateTs: Date? = null,
     @PrimaryKey
     val id: Long? = null
 )
