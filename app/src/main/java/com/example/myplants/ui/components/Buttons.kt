@@ -2,13 +2,10 @@ package com.example.myplants.ui.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -21,10 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myplants.R
-import com.example.myplants.ui.theme.MyPlantsTheme
 
 
 @Composable
@@ -110,27 +104,5 @@ fun SmallButton(
             textAlign = TextAlign.Center
         )
 
-    }
-}
-
-@Preview
-@Composable
-fun ButtonPreview() {
-    MyPlantsTheme {
-        Column {
-            SmallButton(
-                modifier = Modifier
-                    .wrapContentSize(),
-                text = "Change Image",
-                iconResource = R.drawable.ic_upload,
-                onClick = { /*TODO*/ }
-            )
-
-            BigButton(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Add your first Plant",
-                onClick = { /*TODO*/ }
-            )
-        }
     }
 }

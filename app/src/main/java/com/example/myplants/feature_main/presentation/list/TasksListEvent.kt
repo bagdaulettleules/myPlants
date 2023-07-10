@@ -8,7 +8,7 @@ sealed class TasksListEvent {
 
     data class Fetch(val fetchType: FetchType) : TasksListEvent()
 
-    data class Water(val task: Task) : TasksListEvent()
+    data class MarkCompleted(val task: Task) : TasksListEvent()
 
     data class Delete(val plant: Plant) : TasksListEvent()
 

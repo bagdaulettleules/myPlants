@@ -3,15 +3,12 @@ package com.example.myplants.feature_main.presentation.list.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myplants.feature_main.domain.util.FetchType
-import com.example.myplants.ui.theme.MyPlantsTheme
 
 @Composable
 fun FetchTypeSection(
@@ -52,16 +49,5 @@ fun FetchTypeSection(
             }
         )
 
-    }
-}
-
-@Preview
-@Composable
-fun FetchTypeSectionPreview() {
-    MyPlantsTheme {
-        FetchTypeSection(
-            modifier = Modifier.fillMaxWidth(),
-            onFetchTypeChange = {}
-        )
     }
 }

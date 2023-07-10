@@ -1,18 +1,8 @@
 package com.example.myplants.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,19 +13,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myplants.R
-import com.example.myplants.ui.theme.MyPlantsTheme
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -170,29 +155,4 @@ fun HintTextInput(
             )
         }
     )
-}
-
-
-@Preview
-@Composable
-fun SearchBarPreview() {
-    MyPlantsTheme {
-        Column {
-            SearchBar(
-                modifier = Modifier.fillMaxWidth(),
-                text = "",
-                hint = "Search",
-                onValueChange = {}
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            HintTextInput(
-                modifier = Modifier.fillMaxWidth(),
-                text = "",
-                hint = "Label here",
-                onValueChange = {}
-            )
-        }
-    }
 }

@@ -9,11 +9,16 @@ import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCases
 import com.example.myplants.feature_main.domain.usecase.task.TaskUseCases
 import com.example.myplants.feature_main.domain.util.FetchType
+import com.example.myplants.feature_main.presentation.util.asDate
+import com.example.myplants.feature_main.presentation.util.getNext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +40,7 @@ class TasksListViewModel @Inject constructor(
     fun onEvent(event: TasksListEvent) {
         when (event) {
             is TasksListEvent.Fetch -> onFetch(event.fetchType)
-            is TasksListEvent.Water -> onWater(event.task)
+            is TasksListEvent.MarkCompleted -> onMarkCompleted(event.task)
             is TasksListEvent.Delete -> onDelete(event.plant)
             TasksListEvent.Restore -> onRestore()
         }
@@ -48,8 +53,31 @@ class TasksListViewModel @Inject constructor(
         getPlantsAsTask(fetchType)
     }
 
-    private fun onWater(task: Task) {
+    private fun onMarkCompleted(task: Task) {
+        viewModelScope.launch {
+            val localDate = LocalDate.now()
+            taskUseCases.saveTask(
+                task.copy(
+                    isDone = true,
+                    updateTs = localDate.asDate(ZoneId.systemDefault())
+                )
+            )
 
+            plantUseCases.getPlant(task.plantId)?.let { plant ->
+                val nextDayOfWeek = plant.waterDays
+                    .sorted()
+                    .firstOrNull { it >= DayOfWeek.from(task.dueDateTs.toInstant()) }
+                    ?: plant.waterDays[0]
+                taskUseCases.saveTask(
+                    Task(
+                        plantId = task.plantId,
+                        dueDateTs = localDate.getNext(nextDayOfWeek).asDate(ZoneId.systemDefault()),
+                        updateTs = localDate.asDate(ZoneId.systemDefault()),
+                        isDone = false
+                    )
+                )
+            }
+        }
     }
 
     private fun onDelete(plant: Plant) {

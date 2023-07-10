@@ -1,6 +1,5 @@
 package com.example.myplants.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,17 +11,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myplants.R
 import com.example.myplants.feature_main.presentation.util.Screen
-import com.example.myplants.ui.theme.MyPlantsTheme
 
 @Composable
 fun NavigationBar(
@@ -97,17 +93,5 @@ fun NavigationBar(
         BottomDivider(
             onClick = {}
         )
-    }
-}
-
-@Preview
-@Composable
-fun NavigationBarPreview() {
-    MyPlantsTheme {
-        Surface {
-            NavigationBar(
-                onNavigationClick = {}
-            )
-        }
     }
 }

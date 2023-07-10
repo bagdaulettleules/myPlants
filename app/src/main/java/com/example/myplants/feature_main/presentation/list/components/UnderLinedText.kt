@@ -14,9 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myplants.ui.theme.MyPlantsTheme
 
 @Composable
 fun UnderLinedText(
@@ -51,16 +49,6 @@ fun UnderLinedText(
                 thickness = 1.dp,
                 color = MaterialTheme.colorScheme.primaryContainer
             )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun UnderLinedTextPreview() {
-    MyPlantsTheme {
-        UnderLinedText(text = "Upcoming", isSelected = true) {
-
         }
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ad3112205a05b70ddc0590a61ac53377",
+    "identityHash": "f00175bbbdead759f57539ecb0e13400",
     "entities": [
       {
         "tableName": "plant",
@@ -74,18 +74,12 @@
       },
       {
         "tableName": "task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `week_day` TEXT NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "plantId",
             "columnName": "plant_id",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dayOfWeek",
-            "columnName": "week_day",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -148,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ad3112205a05b70ddc0590a61ac53377')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f00175bbbdead759f57539ecb0e13400')"
     ]
   }
 }

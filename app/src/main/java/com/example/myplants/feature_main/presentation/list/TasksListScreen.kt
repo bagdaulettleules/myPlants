@@ -3,6 +3,7 @@ package com.example.myplants.feature_main.presentation.list
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -48,14 +51,13 @@ import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Size
 import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.domain.model.TaskWithPlant
-import com.example.myplants.feature_main.presentation.list.components.EmptyListMessageBox
+import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
 import com.example.myplants.feature_main.presentation.util.Screen
 import com.example.myplants.ui.components.NavigationBar
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
-import java.time.DayOfWeek
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +98,11 @@ fun TasksListScreen(
 
                 OutlinedButton(
                     modifier = Modifier.size(40.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        navController.navigate(
+                            Screen.EditPlant.route
+                        )
+                    },
                     border = BorderStroke(0.dp, MaterialTheme.colorScheme.surfaceVariant),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
@@ -119,6 +125,29 @@ fun TasksListScreen(
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
+        floatingActionButton = {
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .size(52.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.background,
+                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ),
+                elevation = ButtonDefaults.buttonElevation(25.dp),
+                contentPadding = PaddingValues(14.dp),
+            ) {
+                Icon(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painterResource(id = R.drawable.ic_add),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.background
+                )
+            }
+        },
         containerColor = Color.Transparent
     ) { paddingValues ->
         Column(
@@ -136,7 +165,7 @@ fun TasksListScreen(
             FetchTypeSection(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(20.dp),
+                    .wrapContentHeight(),
                 fetchType = viewState.fetchType,
                 onFetchTypeChange = { fetchType ->
                     onEvent(TasksListEvent.Fetch(fetchType))
@@ -146,29 +175,50 @@ fun TasksListScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             if (viewState.taskList.isEmpty()) {
-                EmptyListMessageBox(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 40.dp, end = 40.dp),
-                    onAddButtonClick = {
-                        navController.navigate(Screen.EditPlant.route)
-                    }
-                )
+                        .fillMaxSize()
+                        .padding(
+                            top = 84.dp,
+                            start = 64.dp,
+                            end = 64.dp,
+                            bottom = 0.dp
+                        )
+                ) {
+                    EmptyListMessage(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        onAddButtonClick = {
+                            navController.navigate(
+                                Screen.EditPlant.route
+                            )
+                        }
+                    )
+                }
             } else {
                 LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 168.dp),
+                    columns = GridCells.Fixed(2),
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(viewState.taskList) { task ->
+                    items(viewState.taskList) { taskWithPlant ->
                         TaskListItem(
                             modifier = Modifier
-                                .width(168.dp)
+                                .fillMaxWidth()
                                 .height(256.dp),
-                            task = task,
-                            onItemClick = {},
-                            onStatusIconClick = {}
+                            item = taskWithPlant,
+                            onItemClick = { plant ->
+                                navController.navigate(
+                                    Screen.PlantDetail.route +
+                                            "?plantId=${plant.id}"
+                                )
+                            },
+                            onStatusIconClick = { task ->
+                                onEvent(TasksListEvent.MarkCompleted(task))
+                            }
                         )
                     }
                 }
@@ -184,7 +234,7 @@ fun PlantsListScreenPreview() {
         taskList = listOf(
             TaskWithPlant(tasksList[0], monsteraPlant),
             TaskWithPlant(tasksList[1], monsteraPlant),
-            TaskWithPlant(tasksList[2], monsteraPlant),
+            TaskWithPlant(tasksList[2], monsteraPlant)
         )
     )
     MyPlantsTheme {
@@ -203,14 +253,14 @@ val monsteraPlant = Plant(
     null,
     emptyList(),
     12,
-    50,
+    500,
     Size.MEDIUM,
     null,
     1
 )
 
 val tasksList = listOf(
-    Task(1, DayOfWeek.FRIDAY, Date(), true, null, 1),
-    Task(1, DayOfWeek.SATURDAY, Date(), false, null, 2),
-    Task(1, DayOfWeek.SUNDAY, Date(), false, null, 3)
+    Task(1, Date(), true, null, 1),
+    Task(1, Date(), false, null, 2),
+    Task(1, Date(), false, null, 3)
 )
