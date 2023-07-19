@@ -1,6 +1,5 @@
 package com.example.myplants.feature_main.presentation.list
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -100,10 +99,10 @@ fun TasksListScreen(
                     modifier = Modifier.size(40.dp),
                     onClick = {
                         navController.navigate(
-                            Screen.EditPlant.route
+                            Screen.NotificationsList.route
                         )
                     },
-                    border = BorderStroke(0.dp, MaterialTheme.colorScheme.surfaceVariant),
+                    border = null,
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -121,13 +120,17 @@ fun TasksListScreen(
         },
         bottomBar = {
             NavigationBar(
-                onNavigationClick = {}
+                onNavigationClick = {
+                    navController.navigate(it.route)
+                }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             Button(
-                onClick = { },
+                onClick = {
+                    navController.navigate(Screen.EditPlant.route)
+                },
                 modifier = Modifier
                     .size(52.dp),
                 shape = RoundedCornerShape(16.dp),
@@ -250,7 +253,7 @@ fun PlantsListScreenPreview() {
 val monsteraPlant = Plant(
     "Monstera",
     "Short description",
-    null,
+    emptyList(),
     emptyList(),
     12,
     500,

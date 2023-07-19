@@ -6,12 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.myplants.feature_main.presentation.list.TasksListScreen
 import com.example.myplants.feature_main.presentation.list.TasksListViewModel
 import com.example.myplants.feature_main.presentation.util.Screen
@@ -42,6 +44,18 @@ class MainActivity : ComponentActivity() {
                                 viewState = viewModel.state.value,
                                 onEvent = viewModel::onEvent
                             )
+                        }
+
+                        composable(
+                            route = Screen.PlantDetail.route + "?plantId={plantId}",
+                            arguments = listOf(
+                                navArgument(name = "plantId") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                }
+                            )
+                        ) {
+                            Text(text = "Plant Detail")
                         }
 
                     }

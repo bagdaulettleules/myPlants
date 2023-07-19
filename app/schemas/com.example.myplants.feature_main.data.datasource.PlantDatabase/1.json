@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f00175bbbdead759f57539ecb0e13400",
+    "identityHash": "778948f2849945b4ded35002dffbc254",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `images` TEXT NOT NULL, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -21,10 +21,10 @@
             "notNull": false
           },
           {
-            "fieldPath": "image",
-            "columnName": "image",
+            "fieldPath": "images",
+            "columnName": "images",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "waterDays",
@@ -142,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f00175bbbdead759f57539ecb0e13400')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '778948f2849945b4ded35002dffbc254')"
     ]
   }
 }

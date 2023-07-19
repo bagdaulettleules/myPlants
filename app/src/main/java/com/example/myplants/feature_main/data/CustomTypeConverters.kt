@@ -36,4 +36,14 @@ class CustomTypeConverters {
     fun toSize(name: String): Size {
         return enumValueOf(name)
     }
+
+    @TypeConverter
+    fun fromListString(string: List<String>): String {
+        return string.joinToString(",")
+    }
+
+    @TypeConverter
+    fun toListString(value: String): List<String> {
+        return value.split(",")
+    }
 }

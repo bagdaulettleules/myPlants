@@ -41,7 +41,6 @@ import com.example.myplants.R
 import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.domain.model.TaskWithPlant
-import com.example.myplants.ui.theme.NeutralN000
 import com.example.myplants.ui.theme.NeutralN900
 import com.example.myplants.ui.theme.OtherG100
 import com.example.myplants.ui.theme.OtherG500
@@ -59,7 +58,7 @@ fun TaskListItem(
             .then(modifier),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = NeutralN000,
+            containerColor = MaterialTheme.colorScheme.onSecondary,
             contentColor = OtherG500
         ),
         border = BorderStroke(0.5.dp, color = MaterialTheme.colorScheme.onSurface)
@@ -114,7 +113,7 @@ fun TaskListItem(
                         Text(
                             text = "${item.plant.waterAmount}ml",
                             style = MaterialTheme.typography.labelMedium,
-                            color = NeutralN000
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     }
 
@@ -137,7 +136,7 @@ fun TaskListItem(
                         Text(
                             text = "Today",
                             style = MaterialTheme.typography.labelMedium,
-                            color = NeutralN000
+                            color = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                 }

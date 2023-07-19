@@ -10,7 +10,7 @@ import java.util.Date
 data class Plant(
     val name: String,
     val description: String?,
-    val image: String?,
+    val images: List<String> = emptyList(),
     @ColumnInfo(name = "water_days")
     val waterDays: List<DayOfWeek>,
     @ColumnInfo(name = "water_time")

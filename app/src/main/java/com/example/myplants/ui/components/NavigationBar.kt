@@ -67,7 +67,7 @@ fun NavigationBar(
                 )
                 CircleButton(
                     modifier = Modifier.size(48.dp),
-                    icon = painterResource(id = R.drawable.ic_add),
+                    iconResource = R.drawable.ic_add,
                     onClick = { onNavigationClick(Screen.EditPlant) }
                 )
                 NavigationItem(

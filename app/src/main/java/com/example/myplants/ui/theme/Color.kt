@@ -6,7 +6,6 @@ val NeutralN900 = Color(0xFF232926)
 val NeutralN500 = Color(0xFF516370)
 val NeutralN300 = Color(0xFFAFB3B7)
 val NeutralN100 = Color(0xFFF9F9F9)
-val NeutralN000 = Color(0xFFFFFFFF)
 
 val AccentA600 = Color(0xFF085D6F)
 val AccentA500 = Color(0xFF0A6375)
