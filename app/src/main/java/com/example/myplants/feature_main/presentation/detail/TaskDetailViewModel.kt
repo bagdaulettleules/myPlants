@@ -17,7 +17,7 @@ class TaskDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private lateinit var list: LongArray
+    private var taskIds: LongArray? = null
 
     private val _viewState = mutableStateOf(
         TaskDetailState()
@@ -27,7 +27,7 @@ class TaskDetailViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<LongArray>("tasksList")?.let {
-            list = it
+            taskIds = it
 
             _viewState.value = viewState.value.copy(
                 pages = it.size
@@ -55,8 +55,8 @@ class TaskDetailViewModel @Inject constructor(
                 )
             )
 
-            _viewState.value.plant?.let {
-                taskUseCase.nextSchedule(it)
+            _viewState.value.task?.let {
+                taskUseCase.nextSchedule(it.plant)
             }
         }
     }
@@ -65,12 +65,13 @@ class TaskDetailViewModel @Inject constructor(
         _viewState.value = viewState.value.copy(
             currentPage = page
         )
-        viewModelScope.launch {
-            taskUseCase.getTask(list[page])?.let { task ->
-                _viewState.value = viewState.value.copy(
-                    schedule = task.schedule,
-                    plant = task.plant
-                )
+        taskIds?.let { ids ->
+            viewModelScope.launch {
+                taskUseCase.getTask(ids[page])?.let {
+                    _viewState.value = viewState.value.copy(
+                        task = it
+                    )
+                }
             }
         }
     }

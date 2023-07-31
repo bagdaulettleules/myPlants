@@ -41,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
+import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.presentation.detail.components.PageIndicator
 import com.example.myplants.feature_main.presentation.detail.components.ShortSummarySection
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
@@ -57,15 +58,17 @@ import com.example.myplants.ui.theme.NeutralN900
 @Composable
 fun TaskDetailScreen(
     navController: NavHostController = rememberNavController(),
-    state: TaskDetailState,
+    pages: Int = 1,
+    initialPage: Int = 0,
+    task: Task? = null,
     onEvent: (TaskDetailEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(
-        pageCount = { state.pages },
-        initialPage = state.currentPage
+        pageCount = { pages },
+        initialPage = initialPage
     )
     LaunchedEffect(key1 = pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -81,7 +84,7 @@ fun TaskDetailScreen(
                 .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            if (state.plant == null || state.schedule == null) {
+            if (task == null) {
                 EmptyListMessage(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,7 +105,7 @@ fun TaskDetailScreen(
                         .padding(paddingValues)
                 ) { index ->
                     GlideImage(
-                        model = state.plant.image,
+                        model = task.plant.image,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize(),
@@ -111,7 +114,7 @@ fun TaskDetailScreen(
                         it
                             .placeholder(R.drawable.ic_plant_image_placeholder)
                             .error(R.drawable.ic_plant_image_placeholder)
-                            .load(state.plant.image)
+                            .load(task.plant.image)
                     }
                 }
 
@@ -144,14 +147,14 @@ fun TaskDetailScreen(
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                text = state.plant.name,
+                                text = task.plant.name,
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = NeutralN900,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
 
-                            state.plant.description?.let {
+                            task.plant.description?.let {
                                 Text(
                                     text = it,
                                     style = MaterialTheme.typography.bodyMedium,
@@ -164,9 +167,9 @@ fun TaskDetailScreen(
                                     .fillMaxWidth()
                                     .height(48.dp),
                                 text = "Mark as watered",
-                                enabled = state.schedule.isDone,
+                                enabled = task.schedule.isDone,
                                 onClick = {
-                                    onEvent(TaskDetailEvent.MarkWatered(state.schedule))
+                                    onEvent(TaskDetailEvent.MarkWatered(task.schedule))
                                 }
                             )
                         }
@@ -194,19 +197,19 @@ fun TaskDetailScreen(
                         iconColor = NeutralN900,
                         onClick = {
                             navController.navigate(
-                                Screen.EditPlant.route + "?plantId=${state.plant.id}"
+                                Screen.EditPlant.route + "?plantId=${task.plant.id}"
                             )
                         },
                         paddingValues = PaddingValues(8.dp)
                     )
 
-                    state.plant.let {
+                    task.plant.let {
                         ShortSummarySection(
                             modifier = Modifier
                                 .layoutId("short_summary_box"),
-                            size = state.plant.size.name,
-                            waterAmount = state.plant.waterAmount,
-                            frequency = state.plant.waterDays.size
+                            size = task.plant.size.name,
+                            waterAmount = task.plant.waterAmount,
+                            frequency = task.plant.waterDays.size
                         )
                     }
 
@@ -214,7 +217,7 @@ fun TaskDetailScreen(
                     PageIndicator(
                         modifier = Modifier
                             .layoutId("page_indicator"),
-                        size = state.pages,
+                        size = pages,
                         currentPage = pagerState.currentPage
                     )
 

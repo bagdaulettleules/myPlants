@@ -61,9 +61,12 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             val viewModel = hiltViewModel<TaskDetailViewModel>()
+                            val viewState = viewModel.viewState.value
                             TaskDetailScreen(
                                 navController = navController,
-                                state = viewModel.viewState.value,
+                                pages = viewState.pages,
+                                initialPage = viewState.pages,
+                                task = viewState.task,
                                 onEvent = viewModel::onEvent
                             )
                         }

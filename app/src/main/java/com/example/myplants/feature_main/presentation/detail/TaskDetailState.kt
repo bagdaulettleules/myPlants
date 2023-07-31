@@ -1,11 +1,9 @@
 package com.example.myplants.feature_main.presentation.detail
 
-import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Schedule
+import com.example.myplants.feature_main.domain.model.Task
 
 data class TaskDetailState(
-    val pages: Int = 0,
+    val pages: Int = 1,
     val currentPage: Int = 0,
-    val schedule: Schedule? = null,
-    val plant: Plant? = null
+    val task: Task? = null
 )
