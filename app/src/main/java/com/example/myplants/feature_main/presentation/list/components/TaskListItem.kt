@@ -1,7 +1,6 @@
 package com.example.myplants.feature_main.presentation.list.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,20 +36,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
 import com.example.myplants.feature_main.domain.model.Plant
+import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.model.TaskWithPlant
 import com.example.myplants.ui.theme.NeutralN900
 import com.example.myplants.ui.theme.OtherG100
 import com.example.myplants.ui.theme.OtherG500
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TaskListItem(
     modifier: Modifier = Modifier,
-    item: TaskWithPlant,
+    item: Task,
     onItemClick: (Plant) -> Unit,
-    onStatusIconClick: (Task) -> Unit
+    onStatusIconClick: (Schedule) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -83,15 +85,18 @@ fun TaskListItem(
             ) {
                 val constraints = boxConstraintSet()
 
-                Image(
+                GlideImage(
+                    model = item.plant.image,
+                    contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize(),
-                    painter = painterResource(
-                        id = R.drawable.ic_plant_image_placeholder
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.None
-                )
+                    contentScale = ContentScale.Crop
+                ) {
+                    it
+                        .placeholder(R.drawable.ic_plant_image_placeholder)
+                        .error(R.drawable.ic_plant_image_placeholder)
+                        .load(item.plant.image)
+                }
 
                 ConstraintLayout(constraints) {
                     Box(
@@ -180,11 +185,11 @@ fun TaskListItem(
 
                 Button(
                     onClick = {
-                        onStatusIconClick(item.task)
+                        onStatusIconClick(item.schedule)
                     },
                     modifier = Modifier
                         .size(24.dp),
-                    enabled = !item.task.isDone,
+                    enabled = !item.schedule.isDone,
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -197,7 +202,7 @@ fun TaskListItem(
                     Icon(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(
-                            id = if (item.task.isDone) {
+                            id = if (item.schedule.isDone) {
                                 R.drawable.ic_check
                             } else {
                                 R.drawable.ic_water_drop

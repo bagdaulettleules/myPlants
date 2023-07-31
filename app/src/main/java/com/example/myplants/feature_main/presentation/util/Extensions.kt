@@ -10,6 +10,6 @@ fun LocalDate.getNext(dayOfWeek: DayOfWeek): LocalDate {
     return this.with(TemporalAdjusters.next(dayOfWeek))
 }
 
-fun LocalDate.asDate(zoneId: ZoneId): Date {
-    return Date.from(this.atStartOfDay(zoneId).toInstant())
+fun LocalDate.toLong(zoneId: ZoneId): Long {
+    return Date.from(this.atStartOfDay(zoneId).toInstant()).time
 }

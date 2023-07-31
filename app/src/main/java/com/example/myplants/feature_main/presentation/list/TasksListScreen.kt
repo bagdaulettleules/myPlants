@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -47,9 +46,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myplants.R
 import com.example.myplants.feature_main.domain.model.Plant
+import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Size
 import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.model.TaskWithPlant
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
@@ -57,13 +56,11 @@ import com.example.myplants.feature_main.presentation.util.Screen
 import com.example.myplants.ui.components.NavigationBar
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
-import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksListScreen(
     navController: NavHostController = rememberNavController(),
-    viewState: TasksListState,
+    state: TasksListState,
     onEvent: (TasksListEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -169,7 +166,7 @@ fun TasksListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                fetchType = viewState.fetchType,
+                fetchType = state.fetchType,
                 onFetchTypeChange = { fetchType ->
                     onEvent(TasksListEvent.Fetch(fetchType))
                 }
@@ -177,7 +174,7 @@ fun TasksListScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (viewState.taskList.isEmpty()) {
+            if (state.taskList.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -207,7 +204,7 @@ fun TasksListScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(viewState.taskList) { taskWithPlant ->
+                    items(state.taskList) { taskWithPlant ->
                         TaskListItem(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -215,7 +212,7 @@ fun TasksListScreen(
                             item = taskWithPlant,
                             onItemClick = { plant ->
                                 navController.navigate(
-                                    Screen.PlantDetail.route +
+                                    route = Screen.PlantDetail.route +
                                             "?plantId=${plant.id}"
                                 )
                             },
@@ -235,15 +232,15 @@ fun TasksListScreen(
 fun PlantsListScreenPreview() {
     val tasksListState = TasksListState(
         taskList = listOf(
-            TaskWithPlant(tasksList[0], monsteraPlant),
-            TaskWithPlant(tasksList[1], monsteraPlant),
-            TaskWithPlant(tasksList[2], monsteraPlant)
+            Task(tasksLists[0], monsteraPlant),
+            Task(tasksLists[1], monsteraPlant),
+            Task(tasksLists[2], monsteraPlant)
         )
     )
     MyPlantsTheme {
         Surface {
             TasksListScreen(
-                viewState = tasksListState,
+                state = tasksListState,
                 onEvent = {}
             )
         }
@@ -253,7 +250,7 @@ fun PlantsListScreenPreview() {
 val monsteraPlant = Plant(
     "Monstera",
     "Short description",
-    emptyList(),
+    null,
     emptyList(),
     12,
     500,
@@ -262,8 +259,8 @@ val monsteraPlant = Plant(
     1
 )
 
-val tasksList = listOf(
-    Task(1, Date(), true, null, 1),
-    Task(1, Date(), false, null, 2),
-    Task(1, Date(), false, null, 3)
+val tasksLists = listOf(
+    Schedule(1, System.currentTimeMillis(), true, null, 1),
+    Schedule(1, System.currentTimeMillis(), false, null, 2),
+    Schedule(1, System.currentTimeMillis(), false, null, 3)
 )

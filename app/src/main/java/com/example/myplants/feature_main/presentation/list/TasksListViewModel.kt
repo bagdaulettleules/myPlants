@@ -5,31 +5,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCases
-import com.example.myplants.feature_main.domain.usecase.task.TaskUseCases
+import com.example.myplants.feature_main.domain.model.Schedule
+import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
+import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
 import com.example.myplants.feature_main.domain.util.FetchType
-import com.example.myplants.feature_main.presentation.util.asDate
-import com.example.myplants.feature_main.presentation.util.getNext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class TasksListViewModel @Inject constructor(
-    private val taskUseCases: TaskUseCases,
-    private val plantUseCases: PlantUseCases,
+    private val plantUseCase: PlantUseCase,
+    private val taskUseCase: TaskUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(TasksListState())
     val state: State<TasksListState> = _state
 
-    private var getPlantsJob: Job? = null
+    private var getTasksJob: Job? = null
 
     private var deletedPlant: Plant? = null
 
@@ -40,7 +35,7 @@ class TasksListViewModel @Inject constructor(
     fun onEvent(event: TasksListEvent) {
         when (event) {
             is TasksListEvent.Fetch -> onFetch(event.fetchType)
-            is TasksListEvent.MarkCompleted -> onMarkCompleted(event.task)
+            is TasksListEvent.MarkCompleted -> onMarkWatered(event.schedule)
             is TasksListEvent.Delete -> onDelete(event.plant)
             TasksListEvent.Restore -> onRestore()
         }
@@ -53,53 +48,41 @@ class TasksListViewModel @Inject constructor(
         getPlantsAsTask(fetchType)
     }
 
-    private fun onMarkCompleted(task: Task) {
+    private fun onMarkWatered(schedule: Schedule) {
         viewModelScope.launch {
-            val localDate = LocalDate.now()
-            taskUseCases.saveTask(
-                task.copy(
+            taskUseCase.saveSchedule(
+                schedule.copy(
                     isDone = true,
-                    updateTs = localDate.asDate(ZoneId.systemDefault())
+                    updateTs = System.currentTimeMillis()
                 )
             )
 
-            plantUseCases.getPlant(task.plantId)?.let { plant ->
-                val nextDayOfWeek = plant.waterDays
-                    .sorted()
-                    .firstOrNull { it >= DayOfWeek.from(task.dueDateTs.toInstant()) }
-                    ?: plant.waterDays[0]
-                taskUseCases.saveTask(
-                    Task(
-                        plantId = task.plantId,
-                        dueDateTs = localDate.getNext(nextDayOfWeek).asDate(ZoneId.systemDefault()),
-                        updateTs = localDate.asDate(ZoneId.systemDefault()),
-                        isDone = false
-                    )
-                )
+            plantUseCase.getPlant(schedule.plantId)?.let {
+                taskUseCase.nextSchedule(it)
             }
         }
     }
 
     private fun onDelete(plant: Plant) {
         viewModelScope.launch {
-            plantUseCases.deletePlant(plant)
+            plantUseCase.deletePlant(plant)
             deletedPlant = plant
         }
     }
 
     private fun onRestore() {
         viewModelScope.launch {
-            plantUseCases.savePlant(deletedPlant ?: return@launch)
+            plantUseCase.savePlant(deletedPlant ?: return@launch)
             deletedPlant = null
         }
     }
 
     private fun getPlantsAsTask(fetchType: FetchType) {
-        getPlantsJob?.cancel()
-        getPlantsJob = taskUseCases.getAll(fetchType)
-            .onEach { plantsAsTasks ->
+        getTasksJob?.cancel()
+        getTasksJob = taskUseCase.getAllTasks(fetchType)
+            .onEach { tasks ->
                 _state.value = state.value.copy(
-                    taskList = plantsAsTasks,
+                    taskList = tasks,
                     fetchType = fetchType
                 )
             }

@@ -2,11 +2,12 @@ package com.example.myplants.feature_main.domain.usecase.plant
 
 import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.repository.PlantLocalRepository
+import kotlinx.coroutines.flow.Flow
 
-class DeletePlant(
-    private val plantLocalRepository: PlantLocalRepository
+class GetAllPlants(
+    private val repository: PlantLocalRepository
 ) {
-    suspend operator fun invoke(plant: Plant) {
-        plantLocalRepository.delete(plant)
+    operator fun invoke(): Flow<List<Plant>> {
+        return repository.getAll()
     }
 }
