@@ -167,7 +167,7 @@ fun TaskDetailScreen(
                                     .fillMaxWidth()
                                     .height(48.dp),
                                 text = "Mark as watered",
-                                enabled = task.schedule.isDone,
+                                enabled = !task.schedule.isDone,
                                 onClick = {
                                     onEvent(TaskDetailEvent.MarkWatered(task.schedule))
                                 }
