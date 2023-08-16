@@ -46,7 +46,7 @@ import com.example.myplants.feature_main.presentation.detail.components.PageIndi
 import com.example.myplants.feature_main.presentation.detail.components.ShortSummarySection
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.util.Screen
-import com.example.myplants.ui.components.BigButton
+import com.example.myplants.ui.components.AccentButton
 import com.example.myplants.ui.components.CircleButton
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
@@ -162,7 +162,7 @@ fun TaskDetailScreen(
                                 )
                             }
 
-                            BigButton(
+                            AccentButton(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(48.dp),

@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.myplants.R
-import com.example.myplants.ui.components.BigButton
+import com.example.myplants.ui.components.AccentButton
 import com.example.myplants.ui.theme.NeutralN900
 
 @Composable
@@ -53,7 +53,7 @@ fun EmptyListMessage(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        BigButton(
+        AccentButton(
             modifier = Modifier.fillMaxWidth(),
             text = "Add Your First Plant",
             onClick = onAddButtonClick
