@@ -7,6 +7,6 @@ class GetTask(
     private val repository: TaskLocalRepository
 ) {
     suspend operator fun invoke(id: Long): Task? {
-        return repository.get(id)
+        return repository.getAsTask(id)
     }
 }

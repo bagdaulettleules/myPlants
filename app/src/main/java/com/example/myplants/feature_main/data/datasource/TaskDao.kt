@@ -6,23 +6,26 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.model.TaskWithPlant
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
 
     @Transaction
-    @Query("select * from task order by update_ts desc")
-    fun getAll(): Flow<List<TaskWithPlant>>
+    @Query("select * from schedule order by update_ts desc")
+    fun getAll(): Flow<List<Task>>
 
-    @Query("select * from task where id = :id")
-    suspend fun get(id: Long): Task?
+    @Query("select * from schedule where id = :id")
+    suspend fun get(id: Long): Schedule?
+
+    @Query("select * from schedule where id = :id")
+    suspend fun getAsTask(id: Long): Task?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(task: Task): Long
+    suspend fun upsert(schedule: Schedule): Long
 
     @Delete
-    suspend fun delete(task: Task)
+    suspend fun delete(schedule: Schedule)
 }

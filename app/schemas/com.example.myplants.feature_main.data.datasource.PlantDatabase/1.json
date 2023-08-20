@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1e3386f74e80298a2ea9c06d8b9ec18",
+    "identityHash": "244ecd0e13c7e6f49e4a452d5d62169e",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER NOT NULL, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -48,13 +48,13 @@
             "fieldPath": "size",
             "columnName": "size",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "updateTs",
             "columnName": "updateTs",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "id",
@@ -73,19 +73,13 @@
         "foreignKeys": []
       },
       {
-        "tableName": "task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `week_day` TEXT NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER NOT NULL, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "schedule",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "plantId",
             "columnName": "plant_id",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "dayOfWeek",
-            "columnName": "week_day",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -104,7 +98,7 @@
             "fieldPath": "updateTs",
             "columnName": "update_ts",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "id",
@@ -121,13 +115,13 @@
         },
         "indices": [
           {
-            "name": "index_task_plant_id",
+            "name": "index_schedule_plant_id",
             "unique": false,
             "columnNames": [
               "plant_id"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_task_plant_id` ON `${TABLE_NAME}` (`plant_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_schedule_plant_id` ON `${TABLE_NAME}` (`plant_id`)"
           }
         ],
         "foreignKeys": [
@@ -148,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1e3386f74e80298a2ea9c06d8b9ec18')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '244ecd0e13c7e6f49e4a452d5d62169e')"
     ]
   }
 }
