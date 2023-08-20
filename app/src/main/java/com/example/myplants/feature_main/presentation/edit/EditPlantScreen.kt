@@ -1,4 +1,4 @@
-package com.example.myplants.feature_main.presentation.add
+package com.example.myplants.feature_main.presentation.edit
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,13 +40,17 @@ import androidx.constraintlayout.compose.layoutId
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myplants.R
-import com.example.myplants.feature_main.presentation.add.components.HintTextField
-import com.example.myplants.feature_main.presentation.add.components.SelectOptionField
-import com.example.myplants.feature_main.presentation.add.components.SingleSelectDialog
+import com.example.myplants.feature_main.presentation.edit.components.HintTextField
+import com.example.myplants.feature_main.presentation.edit.components.SelectDialog
+import com.example.myplants.feature_main.presentation.edit.components.SelectOptionField
+import com.example.myplants.feature_main.presentation.edit.components.SingleSelectDialog
+import com.example.myplants.feature_main.presentation.util.UiEvent
 import com.example.myplants.ui.components.AccentButton
 import com.example.myplants.ui.components.CircleButton
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun EditPlantScreen(
@@ -54,12 +59,28 @@ fun EditPlantScreen(
     descriptionState: TextFieldState,
     sizeState: SingleSelectState,
     waterAmountState: SingleSelectState,
-    onEvent: (EditPlantEvent) -> Unit
+    waterDaysState: SelectState,
+    onEvent: (EditPlantEvent) -> Unit,
+    eventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow()
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = true) {
+        eventFlow.collectLatest { uiEvent ->
+            when (uiEvent) {
+                is UiEvent.ErrorOccurred -> {
+                    snackbarHostState.showSnackbar(uiEvent.message)
+                }
+
+                UiEvent.SuccessfullyCompleted -> {
+                    navController.navigateUp()
+                }
+            }
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -144,9 +165,9 @@ fun EditPlantScreen(
                         HintTextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            text = nameState.value,
+                            text = nameState.text,
                             hint = nameState.hint,
-                            label = nameState.label,
+                            label = "Plant name*",
                             isHintVisible = nameState.isHintVisible,
                             onValueChange = {
                                 onEvent(EditPlantEvent.NameChanged(it))
@@ -161,8 +182,7 @@ fun EditPlantScreen(
                         ) {
                             SelectOptionField(
                                 modifier = Modifier.weight(1f, false),
-                                text = "Monday",
-                                hint = "Select dates",
+                                text = waterDaysState.text,
                                 label = "Dates*",
                                 onClick = {
                                     onEvent(EditPlantEvent.DatesFocusChanged(true))
@@ -173,8 +193,7 @@ fun EditPlantScreen(
 
                             SelectOptionField(
                                 modifier = Modifier.weight(1f, false),
-                                text = "8:00",
-                                hint = "Set time",
+                                text = "00:00",
                                 label = "Time*",
                                 onClick = {
                                     onEvent(EditPlantEvent.TimeFocusChanged(true))
@@ -187,8 +206,7 @@ fun EditPlantScreen(
                         ) {
                             SelectOptionField(
                                 modifier = Modifier.weight(1f, false),
-                                text = "250ml",
-                                hint = "Select amount of water",
+                                text = waterAmountState.text,
                                 label = "The amount of water*",
                                 onClick = {
                                     onEvent(EditPlantEvent.WaterAmountFocusChanged(true))
@@ -199,9 +217,8 @@ fun EditPlantScreen(
 
                             SelectOptionField(
                                 modifier = Modifier.weight(1f, false),
-                                text = "Medium",
-                                hint = "Select plant size",
                                 label = "Plant size*",
+                                text = sizeState.text,
                                 onClick = {
                                     onEvent(EditPlantEvent.SizeFocusChanged(true))
                                 }
@@ -211,9 +228,9 @@ fun EditPlantScreen(
                         HintTextField(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            text = descriptionState.value,
+                            text = descriptionState.text,
                             hint = descriptionState.hint,
-                            label = descriptionState.label,
+                            label = "Description",
                             isHintVisible = descriptionState.isHintVisible,
                             onValueChange = {
                                 onEvent(EditPlantEvent.DescriptionChanged(it))
@@ -258,6 +275,19 @@ fun EditPlantScreen(
             )
         }
 
+        if (waterDaysState.isDialogShown) {
+            SelectDialog(
+                title = "Dates",
+                options = waterDaysState.options,
+                onSubmit = {
+                    onEvent(EditPlantEvent.DatesSelected(it))
+                },
+                onDismissRequest = {
+                    onEvent(EditPlantEvent.DatesFocusChanged(false))
+                }
+            )
+        }
+
     }
 
 }
@@ -291,22 +321,29 @@ fun EditPlantScreenPreview() {
     MyPlantsTheme {
         EditPlantScreen(
             nameState = TextFieldState(
-                hint = "Enter plant name",
-                label = "Plant name*"
+                hint = "Enter plant name"
             ),
             descriptionState = TextFieldState(
-                hint = "Enter short description for this plant",
-                label = "Description"
+                hint = "Enter short description for this plant"
             ),
             sizeState = SingleSelectState(
-                isDialogShown = true,
+                isDialogShown = false,
                 options = listOf("Small", "Medium", "Large", "Extra large"),
                 selected = 1
             ),
             waterAmountState = SingleSelectState(
                 isDialogShown = false,
-                options = listOf("Small", "Medium", "Large", "Extra large"),
+                options = listOf("250ml", "500ml", "750ml", "1000ml"),
                 selected = 1
+            ),
+            waterDaysState = SelectState(
+                isDialogShown = true,
+                options = listOf(
+                    SelectItem("Everyday", false),
+                    SelectItem("Monday", false),
+                    SelectItem("Tuesday", false),
+                    SelectItem("Wednesday", true)
+                )
             ),
             onEvent = {}
         )

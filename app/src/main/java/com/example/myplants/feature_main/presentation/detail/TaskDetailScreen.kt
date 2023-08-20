@@ -203,15 +203,13 @@ fun TaskDetailScreen(
                         paddingValues = PaddingValues(8.dp)
                     )
 
-                    task.plant.let {
-                        ShortSummarySection(
-                            modifier = Modifier
-                                .layoutId("short_summary_box"),
-                            size = task.plant.size.name,
-                            waterAmount = task.plant.waterAmount,
-                            frequency = task.plant.waterDays.size
-                        )
-                    }
+                    ShortSummarySection(
+                        modifier = Modifier
+                            .layoutId("short_summary_box"),
+                        size = task.plant.size?.name ?: "",
+                        waterAmount = task.plant.waterAmount,
+                        frequency = task.plant.waterDays.size
+                    )
 
 
                     PageIndicator(

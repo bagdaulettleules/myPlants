@@ -1,6 +1,5 @@
-package com.example.myplants.feature_main.presentation.add.components
+package com.example.myplants.feature_main.presentation.edit.components
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,19 +26,9 @@ import com.example.myplants.ui.theme.MyPlantsTheme
 fun SelectOptionField(
     modifier: Modifier = Modifier,
     text: String,
-    hint: String,
     label: String? = null,
-    isHintVisible: Boolean = false,
     onClick: () -> Unit
 ) {
-    val color = animateColorAsState(
-        targetValue = if (isHintVisible) {
-            MaterialTheme.colorScheme.onSurface
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        }
-    )
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top)
@@ -70,16 +59,14 @@ fun SelectOptionField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f, false),
-                text = if (isHintVisible) hint else text,
+                text = text,
                 style = MaterialTheme.typography.bodySmall,
-                color = color.value,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
 
             Icon(
-                modifier = Modifier
-                    .clickable { },
                 painter = painterResource(id = R.drawable.ic_chevron_down),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -97,7 +84,6 @@ fun SelectOptionFieldPreview() {
     MyPlantsTheme {
         SelectOptionField(
             text = "Monday",
-            hint = "Select dates",
             label = "Dates*",
             onClick = {}
         )

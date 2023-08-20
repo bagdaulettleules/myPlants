@@ -1,4 +1,4 @@
-package com.example.myplants.feature_main.presentation.add.components
+package com.example.myplants.feature_main.presentation.edit.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally

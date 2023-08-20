@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myplants.feature_main.presentation.detail.TaskDetailScreen
 import com.example.myplants.feature_main.presentation.detail.TaskDetailViewModel
+import com.example.myplants.feature_main.presentation.edit.EditPlantScreen
+import com.example.myplants.feature_main.presentation.edit.EditPlantViewModel
 import com.example.myplants.feature_main.presentation.list.TasksListScreen
 import com.example.myplants.feature_main.presentation.list.TasksListViewModel
 import com.example.myplants.feature_main.presentation.util.Screen
@@ -68,6 +70,28 @@ class MainActivity : ComponentActivity() {
                                 initialPage = viewState.pages,
                                 task = viewState.task,
                                 onEvent = viewModel::onEvent
+                            )
+                        }
+
+                        composable(
+                            route = Screen.EditPlant.route + "?plantId={plantId}",
+                            arguments = listOf(
+                                navArgument(name = "plantId") {
+                                    type = NavType.LongType
+                                    defaultValue = -1
+                                }
+                            )
+                        ) {
+                            val viewModel = hiltViewModel<EditPlantViewModel>()
+                            EditPlantScreen(
+                                navController = navController,
+                                nameState = viewModel.name.value,
+                                descriptionState = viewModel.description.value,
+                                sizeState = viewModel.size.value,
+                                waterAmountState = viewModel.waterAmount.value,
+                                waterDaysState = viewModel.waterDays.value,
+                                onEvent = viewModel::onEvent,
+                                eventFlow = viewModel.eventFlow
                             )
                         }
 

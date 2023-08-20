@@ -190,9 +190,7 @@ fun TasksListScreen(
                             .fillMaxWidth()
                             .wrapContentHeight(),
                         onAddButtonClick = {
-                            navController.navigate(
-                                Screen.EditPlant.route
-                            )
+                            navController.navigate(Screen.EditPlant.route)
                         }
                     )
                 }
