@@ -41,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
-import com.example.myplants.feature_main.domain.model.Task
+import com.example.myplants.feature_main.domain.model.Todo
 import com.example.myplants.feature_main.presentation.detail.components.PageIndicator
 import com.example.myplants.feature_main.presentation.detail.components.ShortSummarySection
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
@@ -60,7 +60,7 @@ fun TaskDetailScreen(
     navController: NavHostController = rememberNavController(),
     pages: Int = 1,
     initialPage: Int = 0,
-    task: Task? = null,
+    todo: Todo? = null,
     onEvent: (TaskDetailEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -84,7 +84,7 @@ fun TaskDetailScreen(
                 .fillMaxSize(),
             contentAlignment = Alignment.BottomCenter
         ) {
-            if (task == null) {
+            if (todo == null) {
                 EmptyListMessage(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,7 +105,7 @@ fun TaskDetailScreen(
                         .padding(paddingValues)
                 ) { index ->
                     GlideImage(
-                        model = task.plant.image,
+                        model = todo.plant.image,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize(),
@@ -114,7 +114,7 @@ fun TaskDetailScreen(
                         it
                             .placeholder(R.drawable.ic_plant_image_placeholder)
                             .error(R.drawable.ic_plant_image_placeholder)
-                            .load(task.plant.image)
+                            .load(todo.plant.image)
                     }
                 }
 
@@ -147,29 +147,27 @@ fun TaskDetailScreen(
                             Text(
                                 modifier = Modifier
                                     .fillMaxWidth(),
-                                text = task.plant.name,
+                                text = todo.plant.name,
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = NeutralN900,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
 
-                            task.plant.description?.let {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                            Text(
+                                text = todo.plant.description,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
 
                             AccentButton(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(48.dp),
                                 text = "Mark as watered",
-                                enabled = !task.schedule.isDone,
+                                enabled = !todo.task.isDone,
                                 onClick = {
-                                    onEvent(TaskDetailEvent.MarkWatered(task.schedule))
+                                    onEvent(TaskDetailEvent.MarkWatered(todo.task))
                                 }
                             )
                         }
@@ -197,7 +195,7 @@ fun TaskDetailScreen(
                         iconColor = NeutralN900,
                         onClick = {
                             navController.navigate(
-                                Screen.EditPlant.route + "?plantId=${task.plant.id}"
+                                Screen.EditPlant.route + "?plantId=${todo.plant.id}"
                             )
                         },
                         paddingValues = PaddingValues(8.dp)
@@ -206,9 +204,9 @@ fun TaskDetailScreen(
                     ShortSummarySection(
                         modifier = Modifier
                             .layoutId("short_summary_box"),
-                        size = task.plant.size?.name ?: "",
-                        waterAmount = task.plant.waterAmount,
-                        frequency = task.plant.waterDays.size
+                        size = todo.plant.size?.name ?: "",
+                        waterAmount = todo.plant.waterAmount,
+                        frequency = todo.plant.waterDays.size
                     )
 
 

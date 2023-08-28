@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Schedule
+import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
 import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
 import com.example.myplants.feature_main.domain.util.FetchType
@@ -35,7 +35,7 @@ class TasksListViewModel @Inject constructor(
     fun onEvent(event: TasksListEvent) {
         when (event) {
             is TasksListEvent.Fetch -> onFetch(event.fetchType)
-            is TasksListEvent.MarkCompleted -> onMarkWatered(event.schedule)
+            is TasksListEvent.MarkCompleted -> onMarkWatered(event.task)
             is TasksListEvent.Delete -> onDelete(event.plant)
             TasksListEvent.Restore -> onRestore()
         }
@@ -48,41 +48,42 @@ class TasksListViewModel @Inject constructor(
         getPlantsAsTask(fetchType)
     }
 
-    private fun onMarkWatered(schedule: Schedule) {
+    private fun onMarkWatered(task: Task) {
         viewModelScope.launch {
-            taskUseCase.saveSchedule(
-                schedule.copy(
+            taskUseCase.save(
+                task.copy(
                     isDone = true,
                     updateTs = System.currentTimeMillis()
                 )
             )
 
-            plantUseCase.getPlant(schedule.plantId)?.let {
-                taskUseCase.nextSchedule(it)
+            plantUseCase.get(task.plantId)?.let {
+                val newTask = taskUseCase.getNext(it)
+                taskUseCase.save(newTask)
             }
         }
     }
 
     private fun onDelete(plant: Plant) {
         viewModelScope.launch {
-            plantUseCase.deletePlant(plant)
+            plantUseCase.delete(plant)
             deletedPlant = plant
         }
     }
 
     private fun onRestore() {
         viewModelScope.launch {
-            plantUseCase.savePlant(deletedPlant ?: return@launch)
+            plantUseCase.save(deletedPlant ?: return@launch)
             deletedPlant = null
         }
     }
 
     private fun getPlantsAsTask(fetchType: FetchType) {
         getTasksJob?.cancel()
-        getTasksJob = taskUseCase.getAllTasks(fetchType)
+        getTasksJob = plantUseCase.getAll(fetchType)
             .onEach { tasks ->
                 _state.value = state.value.copy(
-                    taskList = tasks,
+                    todoList = tasks,
                     fetchType = fetchType
                 )
             }

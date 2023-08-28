@@ -10,6 +10,7 @@ import com.example.myplants.feature_main.domain.model.InvalidPlantException
 import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Size
 import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
+import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
 import com.example.myplants.feature_main.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EditPlantViewModel @Inject constructor(
     private val plantUseCase: PlantUseCase,
+    private val taskUseCase: TaskUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -73,10 +75,10 @@ class EditPlantViewModel @Inject constructor(
         savedStateHandle.get<Long>("plantId")?.let { id ->
             if (id > 0) {
                 viewModelScope.launch {
-                    plantUseCase.getPlant(id)?.also { plant ->
+                    plantUseCase.get(id)?.also { plant ->
                         currentPlantId = plant.id
                         nameChanged(plant.name)
-                        descriptionChanged(plant.description ?: "")
+                        descriptionChanged(plant.description)
                         sizeSelected(plant.size?.ordinal)
                         waterAmountSelected(waterAmountList.indexOf(plant.waterAmount))
                         datesSelected(plant.waterDays.map { it.name })
@@ -173,20 +175,22 @@ class EditPlantViewModel @Inject constructor(
     private fun savePlant() {
         viewModelScope.launch {
             try {
-                plantUseCase.savePlant(
-                    Plant(
-                        name = name.value.text,
-                        description = description.value.text,
-                        image = null,
-                        waterDays = waterDays.value.options
-                            .filter { it.isSelected }
-                            .map { DayOfWeek.valueOf(it.title) },
-                        size = size.value.selected?.let { Size.values()[it] },
-                        waterTime = 0,
-                        waterAmount = waterAmount.value.selected?.let { waterAmountList[it] } ?: 0,
-                        id = currentPlantId
-                    )
+                val plant = Plant(
+                    name = name.value.text,
+                    description = description.value.text,
+                    image = "",
+                    waterDays = waterDays.value.options
+                        .filter { it.isSelected }
+                        .map { DayOfWeek.valueOf(it.title) },
+                    size = size.value.selected?.let { Size.values()[it] },
+                    waterTime = 0,
+                    waterAmount = waterAmount.value.selected?.let { waterAmountList[it] } ?: 0,
+                    id = currentPlantId
                 )
+
+                plantUseCase.save(plant)
+                taskUseCase.save(taskUseCase.getNext(plant))
+
                 _eventFlow.emit(UiEvent.SuccessfullyCompleted)
             } catch (ex: InvalidPlantException) {
                 _eventFlow.emit(

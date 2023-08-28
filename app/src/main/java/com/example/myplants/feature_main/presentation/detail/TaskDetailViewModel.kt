@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myplants.feature_main.domain.model.Schedule
+import com.example.myplants.feature_main.domain.model.Task
 import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -41,23 +41,19 @@ class TaskDetailViewModel @Inject constructor(
 
     fun onEvent(event: TaskDetailEvent) {
         when (event) {
-            is TaskDetailEvent.MarkWatered -> onMarkWatered(event.schedule)
+            is TaskDetailEvent.MarkWatered -> onMarkWatered(event.task)
             is TaskDetailEvent.PageSelected -> onPageSelected(event.page)
         }
     }
 
-    private fun onMarkWatered(schedule: Schedule) {
+    private fun onMarkWatered(task: Task) {
         viewModelScope.launch {
-            taskUseCase.saveSchedule(
-                schedule.copy(
+            taskUseCase.save(
+                task.copy(
                     isDone = true,
                     updateTs = System.currentTimeMillis()
                 )
             )
-
-            _viewState.value.task?.let {
-                taskUseCase.nextSchedule(it.plant)
-            }
         }
     }
 
@@ -65,14 +61,5 @@ class TaskDetailViewModel @Inject constructor(
         _viewState.value = viewState.value.copy(
             currentPage = page
         )
-        taskIds?.let { ids ->
-            viewModelScope.launch {
-                taskUseCase.getTask(ids[page])?.let {
-                    _viewState.value = viewState.value.copy(
-                        task = it
-                    )
-                }
-            }
-        }
     }
 }

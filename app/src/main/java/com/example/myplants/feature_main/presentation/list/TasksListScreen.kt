@@ -46,9 +46,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myplants.R
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Size
 import com.example.myplants.feature_main.domain.model.Task
+import com.example.myplants.feature_main.domain.model.Todo
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
@@ -174,7 +174,7 @@ fun TasksListScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (state.taskList.isEmpty()) {
+            if (state.todoList.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -202,7 +202,7 @@ fun TasksListScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(state.taskList) { taskWithPlant ->
+                    items(state.todoList) { taskWithPlant ->
                         TaskListItem(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -229,10 +229,10 @@ fun TasksListScreen(
 @Composable
 fun PlantsListScreenPreview() {
     val tasksListState = TasksListState(
-        taskList = listOf(
-            Task(tasksLists[0], monsteraPlant),
-            Task(tasksLists[1], monsteraPlant),
-            Task(tasksLists[2], monsteraPlant)
+        todoList = listOf(
+            Todo(monsteraPlant, tasksLists[0]),
+            Todo(monsteraPlant, tasksLists[1]),
+            Todo(monsteraPlant, tasksLists[2])
         )
     )
     MyPlantsTheme {
@@ -248,7 +248,7 @@ fun PlantsListScreenPreview() {
 val monsteraPlant = Plant(
     "Monstera",
     "Short description",
-    null,
+    "",
     emptyList(),
     12,
     500,
@@ -258,7 +258,7 @@ val monsteraPlant = Plant(
 )
 
 val tasksLists = listOf(
-    Schedule(1, System.currentTimeMillis(), true, null, 1),
-    Schedule(1, System.currentTimeMillis(), false, null, 2),
-    Schedule(1, System.currentTimeMillis(), false, null, 3)
+    Task(1, System.currentTimeMillis(), true, null, 1),
+    Task(1, System.currentTimeMillis(), false, null, 2),
+    Task(1, System.currentTimeMillis(), false, null, 3)
 )

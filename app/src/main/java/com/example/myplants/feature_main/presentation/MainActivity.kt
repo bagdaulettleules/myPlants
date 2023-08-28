@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 pages = viewState.pages,
                                 initialPage = viewState.pages,
-                                task = viewState.task,
+                                todo = viewState.todo,
                                 onEvent = viewModel::onEvent
                             )
                         }

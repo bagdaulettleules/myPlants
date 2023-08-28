@@ -40,8 +40,8 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Task
+import com.example.myplants.feature_main.domain.model.Todo
 import com.example.myplants.ui.theme.NeutralN900
 import com.example.myplants.ui.theme.OtherG100
 import com.example.myplants.ui.theme.OtherG500
@@ -50,9 +50,9 @@ import com.example.myplants.ui.theme.OtherG500
 @Composable
 fun TaskListItem(
     modifier: Modifier = Modifier,
-    item: Task,
+    item: Todo,
     onItemClick: (Plant) -> Unit,
-    onStatusIconClick: (Schedule) -> Unit
+    onStatusIconClick: (Task) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -169,27 +169,25 @@ fun TaskListItem(
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    item.plant.description?.let {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = it,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = item.plant.description,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
                     onClick = {
-                        onStatusIconClick(item.schedule)
+                        onStatusIconClick(item.task)
                     },
                     modifier = Modifier
                         .size(24.dp),
-                    enabled = !item.schedule.isDone,
+                    enabled = !item.task.isDone,
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -202,7 +200,7 @@ fun TaskListItem(
                     Icon(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(
-                            id = if (item.schedule.isDone) {
+                            id = if (item.task.isDone) {
                                 R.drawable.ic_check
                             } else {
                                 R.drawable.ic_water_drop

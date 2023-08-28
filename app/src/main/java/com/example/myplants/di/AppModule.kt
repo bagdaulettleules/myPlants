@@ -15,10 +15,9 @@ import com.example.myplants.feature_main.domain.usecase.plant.GetAllPlants
 import com.example.myplants.feature_main.domain.usecase.plant.GetPlant
 import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
 import com.example.myplants.feature_main.domain.usecase.plant.SavePlant
-import com.example.myplants.feature_main.domain.usecase.task.GetAllTasks
+import com.example.myplants.feature_main.domain.usecase.task.GetNextTask
 import com.example.myplants.feature_main.domain.usecase.task.GetTask
-import com.example.myplants.feature_main.domain.usecase.task.NextSchedule
-import com.example.myplants.feature_main.domain.usecase.task.SaveSchedule
+import com.example.myplants.feature_main.domain.usecase.task.SaveTask
 import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
 import dagger.Module
 import dagger.Provides
@@ -52,20 +51,19 @@ object AppModule {
     @Provides
     fun providePlantUseCase(plantLocalRepository: PlantLocalRepository): PlantUseCase {
         return PlantUseCase(
-            getPlants = GetAllPlants(plantLocalRepository),
-            getPlant = GetPlant(plantLocalRepository),
-            savePlant = SavePlant(plantLocalRepository),
-            deletePlant = DeletePlant(plantLocalRepository)
+            getAll = GetAllPlants(plantLocalRepository),
+            get = GetPlant(plantLocalRepository),
+            save = SavePlant(plantLocalRepository),
+            delete = DeletePlant(plantLocalRepository)
         )
     }
 
     @Provides
     fun provideTaskUseCase(taskLocalRepository: TaskLocalRepository): TaskUseCase {
         return TaskUseCase(
-            getAllTasks = GetAllTasks(taskLocalRepository),
-            getTask = GetTask(taskLocalRepository),
-            nextSchedule = NextSchedule(taskLocalRepository),
-            saveSchedule = SaveSchedule(taskLocalRepository)
+            get = GetTask(taskLocalRepository),
+            getNext = GetNextTask(taskLocalRepository),
+            save = SaveTask(taskLocalRepository)
         )
     }
 

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.myplants.feature_main.domain.model.Plant
+import com.example.myplants.feature_main.domain.model.Todo
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,10 +15,10 @@ interface PlantDao {
 
     @Transaction
     @Query("select * from plant")
-    fun getAll(): Flow<List<Plant>>
+    fun getAll(): Flow<List<Todo>>
 
     @Query("select * from plant where id = :id")
-    suspend fun get(id: Long): Plant?
+    suspend fun get(id: Long?): Plant?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(plant: Plant): Long

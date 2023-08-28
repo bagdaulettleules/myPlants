@@ -5,10 +5,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.myplants.feature_main.data.CustomTypeConverters
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Schedule
+import com.example.myplants.feature_main.domain.model.Task
 
 @Database(
-    entities = [Plant::class, Schedule::class],
+    entities = [Plant::class, Task::class],
     version = 1
 )
 @TypeConverters(CustomTypeConverters::class)

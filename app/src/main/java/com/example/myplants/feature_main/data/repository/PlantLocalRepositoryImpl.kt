@@ -2,6 +2,7 @@ package com.example.myplants.feature_main.data.repository
 
 import com.example.myplants.feature_main.data.datasource.PlantDao
 import com.example.myplants.feature_main.domain.model.Plant
+import com.example.myplants.feature_main.domain.model.Todo
 import com.example.myplants.feature_main.domain.repository.PlantLocalRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -9,11 +10,11 @@ class PlantLocalRepositoryImpl(
     private val dao: PlantDao
 ) : PlantLocalRepository {
 
-    override fun getAll(): Flow<List<Plant>> {
+    override fun getAll(): Flow<List<Todo>> {
         return dao.getAll()
     }
 
-    override suspend fun get(id: Long): Plant? {
+    override suspend fun get(id: Long?): Plant? {
         return dao.get(id)
     }
 
