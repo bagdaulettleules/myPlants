@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Task(
-    val plantId: Long? = null,
+    val plantId: Long,
     val dueDateTs: Long,
     val isDone: Boolean = false,
     val updateTs: Long? = null,

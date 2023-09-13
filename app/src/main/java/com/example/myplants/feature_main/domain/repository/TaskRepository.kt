@@ -3,7 +3,7 @@ package com.example.myplants.feature_main.domain.repository
 import com.example.myplants.feature_main.domain.model.Task
 import kotlinx.coroutines.flow.Flow
 
-interface TaskLocalRepository {
+interface TaskRepository {
 
     fun getAll(): Flow<List<Task>>
 

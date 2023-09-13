@@ -1,15 +1,17 @@
 package com.example.myplants.feature_main.domain.model
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import java.time.DayOfWeek
 
 data class Todo(
-    @Embedded
-    val plant: Plant,
-    @Relation(
-        entity = Task::class,
-        parentColumn = "id",
-        entityColumn = "plantId"
-    )
-    val task: Task
+    val plantId: Long,
+    val name: String,
+    val description: String = "",
+    val image: String = "",
+    val waterDays: List<DayOfWeek>,
+    val waterTime: Int = 0,
+    val waterAmount: String = "",
+    val size: String = "",
+    val taskId: Long,
+    val isDone: Boolean = false,
+    val dueDateTs: Long
 )

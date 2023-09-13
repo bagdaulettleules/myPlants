@@ -1,8 +1,7 @@
 package com.example.myplants.feature_main.presentation.edit
 
-data class SingleSelectState(
+data class MultipleSelectFieldState(
     val text: String = "",
     val isDialogShown: Boolean = false,
-    val options: List<String> = emptyList(),
-    val selected: Int? = null
+    val options: List<SelectItem> = emptyList()
 )

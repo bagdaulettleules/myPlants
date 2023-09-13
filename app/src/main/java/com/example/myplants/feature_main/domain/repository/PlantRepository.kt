@@ -4,7 +4,7 @@ import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Todo
 import kotlinx.coroutines.flow.Flow
 
-interface PlantLocalRepository {
+interface PlantRepository {
 
     fun getAll(): Flow<List<Todo>>
 

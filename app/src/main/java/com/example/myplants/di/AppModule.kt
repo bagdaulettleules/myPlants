@@ -6,19 +6,17 @@ import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.myplants.feature_main.data.datasource.PlantDatabase
-import com.example.myplants.feature_main.data.repository.PlantLocalRepositoryImpl
-import com.example.myplants.feature_main.data.repository.TaskLocalRepositoryImpl
-import com.example.myplants.feature_main.domain.repository.PlantLocalRepository
-import com.example.myplants.feature_main.domain.repository.TaskLocalRepository
-import com.example.myplants.feature_main.domain.usecase.plant.DeletePlant
-import com.example.myplants.feature_main.domain.usecase.plant.GetAllPlants
-import com.example.myplants.feature_main.domain.usecase.plant.GetPlant
-import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
-import com.example.myplants.feature_main.domain.usecase.plant.SavePlant
-import com.example.myplants.feature_main.domain.usecase.task.GetNextTask
-import com.example.myplants.feature_main.domain.usecase.task.GetTask
-import com.example.myplants.feature_main.domain.usecase.task.SaveTask
-import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
+import com.example.myplants.feature_main.data.repository.PlantRepositoryImpl
+import com.example.myplants.feature_main.data.repository.TaskRepositoryImpl
+import com.example.myplants.feature_main.domain.repository.PlantRepository
+import com.example.myplants.feature_main.domain.repository.TaskRepository
+import com.example.myplants.feature_main.domain.usecase.CompleteTask
+import com.example.myplants.feature_main.domain.usecase.DeletePlant
+import com.example.myplants.feature_main.domain.usecase.GetAll
+import com.example.myplants.feature_main.domain.usecase.GetPlant
+import com.example.myplants.feature_main.domain.usecase.GetTask
+import com.example.myplants.feature_main.domain.usecase.PlantUseCase
+import com.example.myplants.feature_main.domain.usecase.SavePlant
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,31 +37,27 @@ object AppModule {
     }
 
     @Provides
-    fun providePlantRepository(database: PlantDatabase): PlantLocalRepository {
-        return PlantLocalRepositoryImpl(database.plantDao)
+    fun providePlantRepository(database: PlantDatabase): PlantRepository {
+        return PlantRepositoryImpl(database.plantDao)
     }
 
     @Provides
-    fun provideTaskRepository(database: PlantDatabase): TaskLocalRepository {
-        return TaskLocalRepositoryImpl(database.taskDao)
+    fun provideTaskRepository(database: PlantDatabase): TaskRepository {
+        return TaskRepositoryImpl(database.taskDao)
     }
 
     @Provides
-    fun providePlantUseCase(plantLocalRepository: PlantLocalRepository): PlantUseCase {
+    fun providePlantUseCase(
+        taskRepository: TaskRepository,
+        plantRepository: PlantRepository
+    ): PlantUseCase {
         return PlantUseCase(
-            getAll = GetAllPlants(plantLocalRepository),
-            get = GetPlant(plantLocalRepository),
-            save = SavePlant(plantLocalRepository),
-            delete = DeletePlant(plantLocalRepository)
-        )
-    }
-
-    @Provides
-    fun provideTaskUseCase(taskLocalRepository: TaskLocalRepository): TaskUseCase {
-        return TaskUseCase(
-            get = GetTask(taskLocalRepository),
-            getNext = GetNextTask(taskLocalRepository),
-            save = SaveTask(taskLocalRepository)
+            getAll = GetAll(plantRepository),
+            getPlant = GetPlant(plantRepository),
+            getTask = GetTask(taskRepository),
+            savePlant = SavePlant(taskRepository, plantRepository),
+            deletePlant = DeletePlant(plantRepository),
+            completeTask = CompleteTask(taskRepository, plantRepository)
         )
     }
 

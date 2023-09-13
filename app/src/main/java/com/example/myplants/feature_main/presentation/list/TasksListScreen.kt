@@ -39,16 +39,14 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myplants.R
-import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Size
-import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.model.Todo
+import com.example.myplants.feature_main.domain.util.FetchType
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
@@ -174,7 +172,7 @@ fun TasksListScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (state.todoList.isEmpty()) {
+            if (state.isEmptyPlants) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -189,6 +187,18 @@ fun TasksListScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight(),
+                        header = stringResource(
+                            if (state.fetchType !is FetchType.Missed)
+                                R.string.no_plants_header
+                            else R.string.no_missed_plants_header
+                        ),
+                        message =
+                        stringResource(
+                            if (state.fetchType !is FetchType.Missed)
+                                R.string.no_plants_message
+                            else R.string.no_missed_plants_message
+                        ),
+                        isButtonEnabled = state.fetchType !is FetchType.Missed,
                         onAddButtonClick = {
                             navController.navigate(Screen.EditPlant.route)
                         }
@@ -202,20 +212,25 @@ fun TasksListScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(state.todoList) { taskWithPlant ->
+                    items(state.todoList) { todo ->
                         TaskListItem(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(256.dp),
-                            item = taskWithPlant,
-                            onItemClick = { plant ->
+                            name = todo.name,
+                            description = todo.description,
+                            imageUrl = todo.image,
+                            waterAmountText = todo.waterAmount,
+                            isUpcoming = state.fetchType is FetchType.Upcoming,
+                            isWatered = todo.isDone,
+                            onItemClick = {
                                 navController.navigate(
                                     route = Screen.PlantDetail.route +
-                                            "?plantId=${plant.id}"
+                                            "?taskId=${todo.taskId}"
                                 )
                             },
-                            onStatusIconClick = { task ->
-                                onEvent(TasksListEvent.MarkCompleted(task))
+                            onStatusIconClick = {
+                                onEvent(TasksListEvent.MarkWatered(todo.taskId))
                             }
                         )
                     }
@@ -229,11 +244,7 @@ fun TasksListScreen(
 @Composable
 fun PlantsListScreenPreview() {
     val tasksListState = TasksListState(
-        todoList = listOf(
-            Todo(monsteraPlant, tasksLists[0]),
-            Todo(monsteraPlant, tasksLists[1]),
-            Todo(monsteraPlant, tasksLists[2])
-        )
+        todoList = listOf()
     )
     MyPlantsTheme {
         Surface {
@@ -244,21 +255,3 @@ fun PlantsListScreenPreview() {
         }
     }
 }
-
-val monsteraPlant = Plant(
-    "Monstera",
-    "Short description",
-    "",
-    emptyList(),
-    12,
-    500,
-    Size.MEDIUM,
-    null,
-    1
-)
-
-val tasksLists = listOf(
-    Task(1, System.currentTimeMillis(), true, null, 1),
-    Task(1, System.currentTimeMillis(), false, null, 2),
-    Task(1, System.currentTimeMillis(), false, null, 3)
-)

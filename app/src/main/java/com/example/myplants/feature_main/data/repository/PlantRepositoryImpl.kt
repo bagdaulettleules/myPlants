@@ -3,12 +3,12 @@ package com.example.myplants.feature_main.data.repository
 import com.example.myplants.feature_main.data.datasource.PlantDao
 import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Todo
-import com.example.myplants.feature_main.domain.repository.PlantLocalRepository
+import com.example.myplants.feature_main.domain.repository.PlantRepository
 import kotlinx.coroutines.flow.Flow
 
-class PlantLocalRepositoryImpl(
+class PlantRepositoryImpl(
     private val dao: PlantDao
-) : PlantLocalRepository {
+) : PlantRepository {
 
     override fun getAll(): Flow<List<Todo>> {
         return dao.getAll()

@@ -14,7 +14,21 @@ import kotlinx.coroutines.flow.Flow
 interface PlantDao {
 
     @Transaction
-    @Query("select * from plant")
+    @Query(
+        """ select 
+                p.id as plantId, 
+                p.name, p.description, 
+                p.image, 
+                p.waterDays, 
+                p.waterTime, 
+                p.waterAmount, 
+                p.size,
+                t.id as taskId, 
+                t.isDone, 
+                t.dueDateTs 
+            from plant p 
+            join task t on t.plantId = p.id """
+    )
     fun getAll(): Flow<List<Todo>>
 
     @Query("select * from plant where id = :id")

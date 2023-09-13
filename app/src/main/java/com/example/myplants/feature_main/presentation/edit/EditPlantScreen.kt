@@ -57,9 +57,9 @@ fun EditPlantScreen(
     navController: NavHostController = rememberNavController(),
     nameState: TextFieldState,
     descriptionState: TextFieldState,
-    sizeState: SingleSelectState,
-    waterAmountState: SingleSelectState,
-    waterDaysState: SelectState,
+    sizeState: SingleSelectFieldState,
+    waterAmountState: SingleSelectFieldState,
+    waterDaysState: MultipleSelectFieldState,
     onEvent: (EditPlantEvent) -> Unit,
     eventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow()
 ) {
@@ -326,17 +326,17 @@ fun EditPlantScreenPreview() {
             descriptionState = TextFieldState(
                 hint = "Enter short description for this plant"
             ),
-            sizeState = SingleSelectState(
+            sizeState = SingleSelectFieldState(
                 isDialogShown = false,
                 options = listOf("Small", "Medium", "Large", "Extra large"),
                 selected = 1
             ),
-            waterAmountState = SingleSelectState(
+            waterAmountState = SingleSelectFieldState(
                 isDialogShown = false,
                 options = listOf("250ml", "500ml", "750ml", "1000ml"),
                 selected = 1
             ),
-            waterDaysState = SelectState(
+            waterDaysState = MultipleSelectFieldState(
                 isDialogShown = true,
                 options = listOf(
                     SelectItem("Everyday", false),

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c210d56efebe3ba0320e97edcef8505a",
+    "identityHash": "4e3354c0884fdf14ff2ceedd6ac845c3",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `waterDays` TEXT NOT NULL, `waterTime` INTEGER, `waterAmount` INTEGER NOT NULL, `size` TEXT, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `waterDays` TEXT NOT NULL, `waterTime` INTEGER NOT NULL, `waterAmount` TEXT NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -36,19 +36,19 @@
             "fieldPath": "waterTime",
             "columnName": "waterTime",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "waterAmount",
             "columnName": "waterAmount",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "size",
             "columnName": "size",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "updateTs",
@@ -74,13 +74,13 @@
       },
       {
         "tableName": "task",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plantId` INTEGER, `dueDateTs` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plantId`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plantId` INTEGER NOT NULL, `dueDateTs` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plantId`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "plantId",
             "columnName": "plantId",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "dueDateTs",
@@ -142,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c210d56efebe3ba0320e97edcef8505a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e3354c0884fdf14ff2ceedd6ac845c3')"
     ]
   }
 }

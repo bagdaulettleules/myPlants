@@ -2,12 +2,12 @@ package com.example.myplants.feature_main.data.repository
 
 import com.example.myplants.feature_main.data.datasource.TaskDao
 import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.repository.TaskLocalRepository
+import com.example.myplants.feature_main.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 
-class TaskLocalRepositoryImpl(
+class TaskRepositoryImpl(
     private val dao: TaskDao
-) : TaskLocalRepository {
+) : TaskRepository {
 
     override fun getAll(): Flow<List<Task>> {
         return dao.getAll()

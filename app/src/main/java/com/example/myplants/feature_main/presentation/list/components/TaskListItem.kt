@@ -39,9 +39,6 @@ import androidx.constraintlayout.compose.ConstraintSet
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
-import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.model.Todo
 import com.example.myplants.ui.theme.NeutralN900
 import com.example.myplants.ui.theme.OtherG100
 import com.example.myplants.ui.theme.OtherG500
@@ -50,13 +47,18 @@ import com.example.myplants.ui.theme.OtherG500
 @Composable
 fun TaskListItem(
     modifier: Modifier = Modifier,
-    item: Todo,
-    onItemClick: (Plant) -> Unit,
-    onStatusIconClick: (Task) -> Unit
+    name: String = "",
+    description: String = "",
+    imageUrl: String = "",
+    waterAmountText: String = "",
+    isUpcoming: Boolean = false,
+    isWatered: Boolean = true,
+    onItemClick: () -> Unit,
+    onStatusIconClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .clickable { onItemClick(item.plant) }
+            .clickable { onItemClick() }
             .then(modifier),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
@@ -86,7 +88,7 @@ fun TaskListItem(
                 val constraints = boxConstraintSet()
 
                 GlideImage(
-                    model = item.plant.image,
+                    model = imageUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize(),
@@ -95,7 +97,7 @@ fun TaskListItem(
                     it
                         .placeholder(R.drawable.ic_plant_image_placeholder)
                         .error(R.drawable.ic_plant_image_placeholder)
-                        .load(item.plant.image)
+                        .load(imageUrl)
                 }
 
                 ConstraintLayout(constraints) {
@@ -116,33 +118,36 @@ fun TaskListItem(
                             .layoutId("waterAmount")
                     ) {
                         Text(
-                            text = "${item.plant.waterAmount}ml",
+                            text = waterAmountText,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSecondary
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .height(20.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                shape = RoundedCornerShape(4.dp)
+                    if (isUpcoming) {
+                        Box(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .height(20.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    shape = RoundedCornerShape(4.dp)
+                                )
+                                .padding(
+                                    start = 6.dp,
+                                    top = 2.dp,
+                                    end = 6.dp,
+                                    bottom = 2.dp
+                                )
+                                .layoutId("dueDateText")
+                        ) {
+
+                            Text(
+                                text = "Today",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSecondary
                             )
-                            .padding(
-                                start = 6.dp,
-                                top = 2.dp,
-                                end = 6.dp,
-                                bottom = 2.dp
-                            )
-                            .layoutId("dueDateText")
-                    ) {
-                        Text(
-                            text = "Today",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondary
-                        )
+                        }
                     }
                 }
             }
@@ -162,7 +167,7 @@ fun TaskListItem(
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = item.plant.name,
+                        text = name,
                         style = MaterialTheme.typography.bodySmall,
                         color = NeutralN900,
                         maxLines = 1,
@@ -171,7 +176,7 @@ fun TaskListItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = item.plant.description,
+                        text = description,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
@@ -182,12 +187,10 @@ fun TaskListItem(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = {
-                        onStatusIconClick(item.task)
-                    },
+                    onClick = onStatusIconClick,
                     modifier = Modifier
                         .size(24.dp),
-                    enabled = !item.task.isDone,
+                    enabled = !isWatered,
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -200,7 +203,7 @@ fun TaskListItem(
                     Icon(
                         modifier = Modifier.fillMaxSize(),
                         painter = painterResource(
-                            id = if (item.task.isDone) {
+                            id = if (isWatered) {
                                 R.drawable.ic_check
                             } else {
                                 R.drawable.ic_water_drop

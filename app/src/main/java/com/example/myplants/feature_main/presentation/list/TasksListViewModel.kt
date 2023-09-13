@@ -5,9 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myplants.feature_main.domain.model.Plant
-import com.example.myplants.feature_main.domain.model.Task
-import com.example.myplants.feature_main.domain.usecase.plant.PlantUseCase
-import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
+import com.example.myplants.feature_main.domain.usecase.PlantUseCase
 import com.example.myplants.feature_main.domain.util.FetchType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -18,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TasksListViewModel @Inject constructor(
-    private val plantUseCase: PlantUseCase,
-    private val taskUseCase: TaskUseCase
+    private val plantUseCase: PlantUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(TasksListState())
     val state: State<TasksListState> = _state
@@ -35,8 +32,8 @@ class TasksListViewModel @Inject constructor(
     fun onEvent(event: TasksListEvent) {
         when (event) {
             is TasksListEvent.Fetch -> onFetch(event.fetchType)
-            is TasksListEvent.MarkCompleted -> onMarkWatered(event.task)
-            is TasksListEvent.Delete -> onDelete(event.plant)
+            is TasksListEvent.MarkWatered -> onMarkWatered(event.taskId)
+            is TasksListEvent.Delete -> onDelete(event.plantId)
             TasksListEvent.Restore -> onRestore()
         }
     }
@@ -48,32 +45,28 @@ class TasksListViewModel @Inject constructor(
         getPlantsAsTask(fetchType)
     }
 
-    private fun onMarkWatered(task: Task) {
+    private fun onMarkWatered(taskId: Long) {
         viewModelScope.launch {
-            taskUseCase.save(
-                task.copy(
-                    isDone = true,
-                    updateTs = System.currentTimeMillis()
-                )
-            )
-
-            plantUseCase.get(task.plantId)?.let {
-                val newTask = taskUseCase.getNext(it)
-                taskUseCase.save(newTask)
+            val task = plantUseCase.getTask(taskId)
+            if (task != null) {
+                plantUseCase.completeTask(task)
             }
         }
     }
 
-    private fun onDelete(plant: Plant) {
+    private fun onDelete(plantId: Long) {
         viewModelScope.launch {
-            plantUseCase.delete(plant)
-            deletedPlant = plant
+            val plant = plantUseCase.getPlant(plantId)
+            if (plant != null) {
+                plantUseCase.deletePlant(plant)
+                deletedPlant = plant
+            }
         }
     }
 
     private fun onRestore() {
         viewModelScope.launch {
-            plantUseCase.save(deletedPlant ?: return@launch)
+            plantUseCase.savePlant(deletedPlant ?: return@launch)
             deletedPlant = null
         }
     }

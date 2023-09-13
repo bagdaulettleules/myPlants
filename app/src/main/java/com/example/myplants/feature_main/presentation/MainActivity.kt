@@ -50,15 +50,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(
-                            route = Screen.PlantDetail.route + "?tasksList={tasksList}&initialIdx={initialIdx}",
+                            route = Screen.PlantDetail.route + "?taskId={taskId}",
                             arguments = listOf(
-                                navArgument(name = "tasksList") {
-                                    type = NavType.LongArrayType
-                                    defaultValue = emptyArray<Long>()
-                                },
-                                navArgument(name = "initialIdx") {
-                                    type = NavType.IntType
-                                    defaultValue = 0
+                                navArgument(name = "taskId") {
+                                    type = NavType.LongType
+                                    defaultValue = -1
                                 }
                             )
                         ) {
@@ -66,10 +62,15 @@ class MainActivity : ComponentActivity() {
                             val viewState = viewModel.viewState.value
                             TaskDetailScreen(
                                 navController = navController,
-                                pages = viewState.pages,
-                                initialPage = viewState.pages,
-                                todo = viewState.todo,
-                                onEvent = viewModel::onEvent
+                                name = viewState.name,
+                                description = viewState.description,
+                                imageUrl = viewState.imageUrl,
+                                size = viewState.size,
+                                frequency = viewState.frequency,
+                                amount = viewState.amount,
+                                isDone = viewState.isDone,
+                                onMarkWatered = viewModel::onMarkWatered,
+                                onEdit = viewModel::onEditPlant
                             )
                         }
 

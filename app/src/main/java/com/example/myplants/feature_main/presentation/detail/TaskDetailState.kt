@@ -1,9 +1,12 @@
 package com.example.myplants.feature_main.presentation.detail
 
-import com.example.myplants.feature_main.domain.model.Todo
-
 data class TaskDetailState(
-    val pages: Int = 1,
-    val currentPage: Int = 0,
-    val todo: Todo? = null
+    val name: String = "",
+    val description: String = "",
+    val imageUrl: String = "",
+    val frequency: String = "",
+    val hour: Int = 0,
+    val amount: String = "",
+    val size: String = "",
+    val isDone: Boolean = false
 )
