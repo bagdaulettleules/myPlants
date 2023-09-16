@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">My Plants</string>
+    <string name="no_plants_header">Sorry.</string>
+    <string name="no_plants_message">There are no plants in the list, please add your first plant.</string>
+    <string name="no_missed_plants_header">Good job!</string>
+    <string name="no_missed_plants_message">All plants are watered.</string>
+    <string name="add_your_first_plant">Add Your First Plant</string>
 </resources>

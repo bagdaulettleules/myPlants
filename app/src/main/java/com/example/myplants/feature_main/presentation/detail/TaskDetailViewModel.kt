@@ -5,73 +5,65 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myplants.feature_main.domain.model.Schedule
-import com.example.myplants.feature_main.domain.usecase.task.TaskUseCase
+import com.example.myplants.feature_main.domain.usecase.PlantUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor(
-    private val taskUseCase: TaskUseCase,
+    private val plantUseCase: PlantUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    private var taskIds: LongArray? = null
 
     private val _viewState = mutableStateOf(
         TaskDetailState()
     )
     val viewState: State<TaskDetailState> = _viewState
 
+    private var currentTaskId: Long = -1
+    private var currentPlantId: Long = -1
 
     init {
-        savedStateHandle.get<LongArray>("tasksList")?.let {
-            taskIds = it
+        savedStateHandle.get<Long>("taskId")?.let { id ->
+            currentTaskId = id
+            if (id > 0) {
+                viewModelScope.launch {
+                    plantUseCase.getTask(id)?.let {
+                        _viewState.value = viewState.value.copy(
+                            isDone = it.isDone
+                        )
+                        currentPlantId = it.plantId
+                    }
 
-            _viewState.value = viewState.value.copy(
-                pages = it.size
-            )
-        }
+                    plantUseCase.getPlant(currentPlantId)?.let {
+                        _viewState.value = viewState.value.copy(
+                            name = it.name,
+                            description = it.description,
+                            imageUrl = it.image,
+                            frequency = "${it.waterDays.size} times/week",
+                            hour = it.waterTime,
+                            amount = it.waterAmount,
+                            size = it.size
+                        )
+                    }
 
-        savedStateHandle.get<Int>("initialIdx")?.let {
-            onPageSelected(it)
-        }
-    }
-
-    fun onEvent(event: TaskDetailEvent) {
-        when (event) {
-            is TaskDetailEvent.MarkWatered -> onMarkWatered(event.schedule)
-            is TaskDetailEvent.PageSelected -> onPageSelected(event.page)
-        }
-    }
-
-    private fun onMarkWatered(schedule: Schedule) {
-        viewModelScope.launch {
-            taskUseCase.saveSchedule(
-                schedule.copy(
-                    isDone = true,
-                    updateTs = System.currentTimeMillis()
-                )
-            )
-
-            _viewState.value.task?.let {
-                taskUseCase.nextSchedule(it.plant)
+                }
             }
         }
     }
 
-    private fun onPageSelected(page: Int) {
+    fun onEditPlant(): Long {
+        return currentPlantId
+    }
+
+    fun onMarkWatered() {
         _viewState.value = viewState.value.copy(
-            currentPage = page
+            isDone = true
         )
-        taskIds?.let { ids ->
-            viewModelScope.launch {
-                taskUseCase.getTask(ids[page])?.let {
-                    _viewState.value = viewState.value.copy(
-                        task = it
-                    )
-                }
+        viewModelScope.launch {
+            plantUseCase.getTask(currentTaskId)?.let {
+                plantUseCase.completeTask(it)
             }
         }
     }

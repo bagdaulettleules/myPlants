@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.myplants.R
@@ -21,6 +22,9 @@ import com.example.myplants.ui.theme.NeutralN900
 @Composable
 fun EmptyListMessage(
     modifier: Modifier = Modifier,
+    header: String,
+    message: String,
+    isButtonEnabled: Boolean = true,
     onAddButtonClick: () -> Unit
 ) {
     Column(
@@ -31,13 +35,13 @@ fun EmptyListMessage(
 
         Image(
             painter = painterResource(id = R.drawable.ic_empty_list),
-            contentDescription = "Empty list"
+            contentDescription = null
         )
 
         Spacer(modifier = Modifier.height(40.dp))
 
         Text(
-            text = "Sorry.",
+            text = header,
             style = MaterialTheme.typography.bodyLarge,
             color = NeutralN900
         )
@@ -45,7 +49,7 @@ fun EmptyListMessage(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "There are no plants in the list, please add your first plant.",
+            text = message,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -53,10 +57,12 @@ fun EmptyListMessage(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        AccentButton(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Add Your First Plant",
-            onClick = onAddButtonClick
-        )
+        if (isButtonEnabled) {
+            AccentButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.add_your_first_plant),
+                onClick = onAddButtonClick
+            )
+        }
     }
 }

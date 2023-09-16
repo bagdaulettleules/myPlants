@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.example.myplants.feature_main.domain.model.Schedule
 import com.example.myplants.feature_main.domain.model.Task
 import kotlinx.coroutines.flow.Flow
 
@@ -14,18 +13,18 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
 
     @Transaction
-    @Query("select * from schedule order by update_ts desc")
+    @Query("select * from task order by dueDateTs desc")
     fun getAll(): Flow<List<Task>>
 
-    @Query("select * from schedule where id = :id")
-    suspend fun get(id: Long): Schedule?
+    @Query("select * from task where id = :id")
+    suspend fun get(id: Long?): Task?
 
-    @Query("select * from schedule where id = :id")
-    suspend fun getAsTask(id: Long): Task?
+    @Query("select * from task where plantId = :plantId and not isDone")
+    suspend fun getNext(plantId: Long?): Task?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsert(schedule: Schedule): Long
+    suspend fun upsert(task: Task): Long
 
     @Delete
-    suspend fun delete(schedule: Schedule)
+    suspend fun delete(task: Task)
 }

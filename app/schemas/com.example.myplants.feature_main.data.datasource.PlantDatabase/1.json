@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "244ecd0e13c7e6f49e4a452d5d62169e",
+    "identityHash": "4e3354c0884fdf14ff2ceedd6ac845c3",
     "entities": [
       {
         "tableName": "plant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT, `image` TEXT, `water_days` TEXT NOT NULL, `water_time` INTEGER NOT NULL, `water_amount` INTEGER NOT NULL, `size` TEXT, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `description` TEXT NOT NULL, `image` TEXT NOT NULL, `waterDays` TEXT NOT NULL, `waterTime` INTEGER NOT NULL, `waterAmount` TEXT NOT NULL, `size` TEXT NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -18,37 +18,37 @@
             "fieldPath": "description",
             "columnName": "description",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "image",
             "columnName": "image",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "waterDays",
-            "columnName": "water_days",
+            "columnName": "waterDays",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "waterTime",
-            "columnName": "water_time",
+            "columnName": "waterTime",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "waterAmount",
-            "columnName": "water_amount",
-            "affinity": "INTEGER",
+            "columnName": "waterAmount",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "size",
             "columnName": "size",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "updateTs",
@@ -73,30 +73,30 @@
         "foreignKeys": []
       },
       {
-        "tableName": "schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plant_id` INTEGER NOT NULL, `due_date_ts` INTEGER NOT NULL, `is_done` INTEGER NOT NULL, `update_ts` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plant_id`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "tableName": "task",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plantId` INTEGER NOT NULL, `dueDateTs` INTEGER NOT NULL, `isDone` INTEGER NOT NULL, `updateTs` INTEGER, `id` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`plantId`) REFERENCES `plant`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "plantId",
-            "columnName": "plant_id",
+            "columnName": "plantId",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "dueDateTs",
-            "columnName": "due_date_ts",
+            "columnName": "dueDateTs",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "isDone",
-            "columnName": "is_done",
+            "columnName": "isDone",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "updateTs",
-            "columnName": "update_ts",
+            "columnName": "updateTs",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -115,13 +115,13 @@
         },
         "indices": [
           {
-            "name": "index_schedule_plant_id",
+            "name": "index_task_plantId",
             "unique": false,
             "columnNames": [
-              "plant_id"
+              "plantId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_schedule_plant_id` ON `${TABLE_NAME}` (`plant_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_task_plantId` ON `${TABLE_NAME}` (`plantId`)"
           }
         ],
         "foreignKeys": [
@@ -130,7 +130,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "plant_id"
+              "plantId"
             ],
             "referencedColumns": [
               "id"
@@ -142,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '244ecd0e13c7e6f49e4a452d5d62169e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e3354c0884fdf14ff2ceedd6ac845c3')"
     ]
   }
 }

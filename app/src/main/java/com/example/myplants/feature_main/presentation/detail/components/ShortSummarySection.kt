@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 fun ShortSummarySection(
     modifier: Modifier,
     size: String,
-    waterAmount: Int,
-    frequency: Int
+    waterAmount: String,
+    frequency: String
 ) {
     Surface(
         modifier = modifier,
@@ -48,7 +48,7 @@ fun ShortSummarySection(
                 )
 
                 Text(
-                    text = size.lowercase().replaceFirstChar { it.titlecase() },
+                    text = size,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -74,7 +74,7 @@ fun ShortSummarySection(
                 )
 
                 Text(
-                    text = "${waterAmount}ml",
+                    text = waterAmount,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primaryContainer
                 )
@@ -100,7 +100,7 @@ fun ShortSummarySection(
                 )
 
                 Text(
-                    text = "${frequency}times/week",
+                    text = frequency,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primaryContainer
                 )
