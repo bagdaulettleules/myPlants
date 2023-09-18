@@ -47,6 +47,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myplants.R
 import com.example.myplants.feature_main.domain.util.FetchType
+import com.example.myplants.feature_main.presentation.list.components.DeleteDialog
 import com.example.myplants.feature_main.presentation.list.components.EmptyListMessage
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
@@ -59,6 +60,7 @@ import com.example.myplants.ui.theme.NeutralN900
 fun TasksListScreen(
     navController: NavHostController = rememberNavController(),
     state: TasksListState,
+    dialogState: DeleteDialogState,
     onEvent: (TasksListEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -229,6 +231,9 @@ fun TasksListScreen(
                                             "?taskId=${todo.taskId}"
                                 )
                             },
+                            onItemLongLick = {
+                                onEvent(TasksListEvent.Delete(todo.plantId))
+                            },
                             onStatusIconClick = {
                                 onEvent(TasksListEvent.MarkWatered(todo.taskId))
                             }
@@ -236,6 +241,18 @@ fun TasksListScreen(
                     }
                 }
             }
+        }
+
+        if (dialogState.isDialogShown) {
+            DeleteDialog(
+                plantName = dialogState.plantName,
+                onConfirm = {
+                    onEvent(TasksListEvent.ConfirmDelete)
+                },
+                onDismiss = {
+                    onEvent(TasksListEvent.DismissDelete)
+                }
+            )
         }
     }
 }
@@ -246,10 +263,15 @@ fun PlantsListScreenPreview() {
     val tasksListState = TasksListState(
         todoList = listOf()
     )
+    val dialogState = DeleteDialogState(
+        isDialogShown = true,
+        plantName = "Monstera"
+    )
     MyPlantsTheme {
         Surface {
             TasksListScreen(
                 state = tasksListState,
+                dialogState = dialogState,
                 onEvent = {}
             )
         }

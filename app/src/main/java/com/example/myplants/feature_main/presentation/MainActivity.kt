@@ -45,6 +45,7 @@ class MainActivity : ComponentActivity() {
                             TasksListScreen(
                                 navController = navController,
                                 state = viewModel.state.value,
+                                dialogState = viewModel.dialogState.value,
                                 onEvent = viewModel::onEvent
                             )
                         }

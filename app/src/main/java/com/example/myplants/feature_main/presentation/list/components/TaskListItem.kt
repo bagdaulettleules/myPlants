@@ -1,8 +1,9 @@
 package com.example.myplants.feature_main.presentation.list.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -43,7 +44,7 @@ import com.example.myplants.ui.theme.NeutralN900
 import com.example.myplants.ui.theme.OtherG100
 import com.example.myplants.ui.theme.OtherG500
 
-@OptIn(ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun TaskListItem(
     modifier: Modifier = Modifier,
@@ -54,11 +55,15 @@ fun TaskListItem(
     isUpcoming: Boolean = false,
     isWatered: Boolean = true,
     onItemClick: () -> Unit,
+    onItemLongLick: () -> Unit,
     onStatusIconClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
-            .clickable { onItemClick() }
+            .combinedClickable(
+                onClick = onItemClick,
+                onLongClick = onItemLongLick
+            )
             .then(modifier),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
