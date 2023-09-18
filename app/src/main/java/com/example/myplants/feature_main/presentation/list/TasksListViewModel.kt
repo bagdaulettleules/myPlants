@@ -21,9 +21,12 @@ class TasksListViewModel @Inject constructor(
     private val _state = mutableStateOf(TasksListState())
     val state: State<TasksListState> = _state
 
+    private val _dialogState = mutableStateOf(DeleteDialogState())
+    val dialogState: State<DeleteDialogState> = _dialogState
+
     private var getTasksJob: Job? = null
 
-    private var deletedPlant: Plant? = null
+    private var deleteCandidate: Plant? = null
 
     init {
         getPlantsAsTask(FetchType.Upcoming)
@@ -34,7 +37,8 @@ class TasksListViewModel @Inject constructor(
             is TasksListEvent.Fetch -> onFetch(event.fetchType)
             is TasksListEvent.MarkWatered -> onMarkWatered(event.taskId)
             is TasksListEvent.Delete -> onDelete(event.plantId)
-            TasksListEvent.Restore -> onRestore()
+            TasksListEvent.DismissDelete -> onDismissDelete()
+            TasksListEvent.ConfirmDelete -> onConfirmDelete()
         }
     }
 
@@ -56,19 +60,31 @@ class TasksListViewModel @Inject constructor(
 
     private fun onDelete(plantId: Long) {
         viewModelScope.launch {
-            val plant = plantUseCase.getPlant(plantId)
-            if (plant != null) {
-                plantUseCase.deletePlant(plant)
-                deletedPlant = plant
+            deleteCandidate = plantUseCase.getPlant(plantId)
+        }
+
+        deleteCandidate?.let {
+            _dialogState.value = dialogState.value.copy(
+                plantName = it.name,
+                isDialogShown = true
+            )
+        }
+    }
+
+    private fun onConfirmDelete() {
+        deleteCandidate?.let {
+            viewModelScope.launch {
+                plantUseCase.deletePlant(it)
             }
         }
     }
 
-    private fun onRestore() {
-        viewModelScope.launch {
-            plantUseCase.savePlant(deletedPlant ?: return@launch)
-            deletedPlant = null
-        }
+    private fun onDismissDelete() {
+        _dialogState.value = dialogState.value.copy(
+            plantName = "",
+            isDialogShown = false
+        )
+        deleteCandidate = null
     }
 
     private fun getPlantsAsTask(fetchType: FetchType) {

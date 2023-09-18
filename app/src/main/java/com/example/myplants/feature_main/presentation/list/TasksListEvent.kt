@@ -10,5 +10,7 @@ sealed class TasksListEvent {
 
     data class Delete(val plantId: Long) : TasksListEvent()
 
-    object Restore : TasksListEvent()
+    object ConfirmDelete : TasksListEvent()
+
+    object DismissDelete : TasksListEvent()
 }
