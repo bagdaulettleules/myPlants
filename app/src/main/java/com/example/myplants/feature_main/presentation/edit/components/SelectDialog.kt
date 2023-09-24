@@ -40,6 +40,7 @@ import com.example.myplants.ui.components.AccentButton
 import com.example.myplants.ui.components.SecondaryButton
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
+import java.util.Locale
 
 @Composable
 fun SelectDialog(
@@ -88,7 +89,8 @@ fun SelectDialog(
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .padding(top = 16.dp, bottom = 16.dp, end = 20.dp),
-                            text = items[i].title,
+                            text = items[i].title.lowercase()
+                                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() },
                             isChecked = items[i].isSelected,
                             onCheckedChange = {
                                 items = items.mapIndexed { j, item ->

@@ -1,10 +1,7 @@
 package com.example.myplants.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.example.myplants.feature_main.data.datasource.PlantDatabase
 import com.example.myplants.feature_main.data.repository.PlantRepositoryImpl
 import com.example.myplants.feature_main.data.repository.TaskRepositoryImpl
@@ -20,7 +17,6 @@ import com.example.myplants.feature_main.domain.usecase.SavePlant
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -59,10 +55,5 @@ object AppModule {
             deletePlant = DeletePlant(plantRepository),
             completeTask = CompleteTask(taskRepository, plantRepository)
         )
-    }
-
-    @Provides
-    fun provideGlide(@ActivityContext context: Context): RequestManager {
-        return Glide.with(context)
     }
 }

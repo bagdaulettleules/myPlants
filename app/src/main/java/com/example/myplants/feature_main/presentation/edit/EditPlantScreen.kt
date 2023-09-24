@@ -1,6 +1,8 @@
 package com.example.myplants.feature_main.presentation.edit
 
-import androidx.compose.foundation.Image
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,11 +29,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -39,11 +39,17 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.constraintlayout.compose.layoutId
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myplants.R
 import com.example.myplants.feature_main.presentation.edit.components.HintTextField
 import com.example.myplants.feature_main.presentation.edit.components.SelectDialog
 import com.example.myplants.feature_main.presentation.edit.components.SelectOptionField
 import com.example.myplants.feature_main.presentation.edit.components.SingleSelectDialog
+import com.example.myplants.feature_main.presentation.edit.states.ImageViewState
+import com.example.myplants.feature_main.presentation.edit.states.MultipleSelectFieldState
+import com.example.myplants.feature_main.presentation.edit.states.SingleSelectFieldState
+import com.example.myplants.feature_main.presentation.edit.states.TextFieldState
 import com.example.myplants.feature_main.presentation.util.UiEvent
 import com.example.myplants.ui.components.AccentButton
 import com.example.myplants.ui.components.CircleButton
@@ -52,6 +58,7 @@ import com.example.myplants.ui.theme.NeutralN900
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun EditPlantScreen(
     navController: NavHostController = rememberNavController(),
@@ -60,13 +67,18 @@ fun EditPlantScreen(
     sizeState: SingleSelectFieldState,
     waterAmountState: SingleSelectFieldState,
     waterDaysState: MultipleSelectFieldState,
+    imageState: ImageViewState,
     onEvent: (EditPlantEvent) -> Unit,
     eventFlow: MutableSharedFlow<UiEvent> = MutableSharedFlow()
 ) {
     val snackbarHostState = remember {
         SnackbarHostState()
     }
-    val scope = rememberCoroutineScope()
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> onEvent(EditPlantEvent.ImagePicked(uri)) }
+    )
 
     LaunchedEffect(key1 = true) {
         eventFlow.collectLatest { uiEvent ->
@@ -110,13 +122,18 @@ fun EditPlantScreen(
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            Image(
+            GlideImage(
+                model = imageState.uri,
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize(),
-                painter = painterResource(id = R.drawable.ic_plant_image_placeholder),
-                contentDescription = null,
                 contentScale = ContentScale.Crop
-            )
+            ) {
+                it
+                    .placeholder(R.drawable.ic_plant_image_placeholder)
+                    .error(R.drawable.ic_plant_image_placeholder)
+                    .load(imageState.uri)
+            }
 
             val constraintSet = screenContentConstraints()
             ConstraintLayout(
@@ -139,9 +156,13 @@ fun EditPlantScreen(
                 AccentButton(
                     modifier = Modifier
                         .layoutId("change_image_button"),
-                    text = "Change Image",
+                    text = imageState.hint,
                     icon = R.drawable.ic_upload,
-                    onClick = { }
+                    onClick = {
+                        imagePickerLauncher.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    }
                 )
 
                 Card(
@@ -344,6 +365,9 @@ fun EditPlantScreenPreview() {
                     SelectItem("Tuesday", false),
                     SelectItem("Wednesday", true)
                 )
+            ),
+            imageState = ImageViewState(
+                hint = "Add image"
             ),
             onEvent = {}
         )

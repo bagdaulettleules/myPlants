@@ -32,7 +32,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -52,7 +51,6 @@ import com.example.myplants.feature_main.presentation.list.components.EmptyListM
 import com.example.myplants.feature_main.presentation.list.components.FetchTypeSection
 import com.example.myplants.feature_main.presentation.list.components.TaskListItem
 import com.example.myplants.feature_main.presentation.util.Screen
-import com.example.myplants.ui.components.NavigationBar
 import com.example.myplants.ui.theme.MyPlantsTheme
 import com.example.myplants.ui.theme.NeutralN900
 
@@ -64,7 +62,7 @@ fun TasksListScreen(
     onEvent: (TasksListEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = Modifier
             .paint(
@@ -114,13 +112,6 @@ fun TasksListScreen(
                     )
                 }
             }
-        },
-        bottomBar = {
-            NavigationBar(
-                onNavigationClick = {
-                    navController.navigate(it.route)
-                }
-            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
@@ -223,7 +214,7 @@ fun TasksListScreen(
                             description = todo.description,
                             imageUrl = todo.image,
                             waterAmountText = todo.waterAmount,
-                            isUpcoming = state.fetchType is FetchType.Upcoming,
+                            dueDate = todo.dueDateText,
                             isWatered = todo.isDone,
                             onItemClick = {
                                 navController.navigate(

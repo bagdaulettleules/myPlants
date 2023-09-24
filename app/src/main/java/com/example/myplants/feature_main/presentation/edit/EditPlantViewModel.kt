@@ -1,5 +1,6 @@
 package com.example.myplants.feature_main.presentation.edit
 
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.focus.FocusState
@@ -10,6 +11,10 @@ import com.example.myplants.feature_main.domain.model.InvalidPlantException
 import com.example.myplants.feature_main.domain.model.Plant
 import com.example.myplants.feature_main.domain.model.Size
 import com.example.myplants.feature_main.domain.usecase.PlantUseCase
+import com.example.myplants.feature_main.presentation.edit.states.ImageViewState
+import com.example.myplants.feature_main.presentation.edit.states.MultipleSelectFieldState
+import com.example.myplants.feature_main.presentation.edit.states.SingleSelectFieldState
+import com.example.myplants.feature_main.presentation.edit.states.TextFieldState
 import com.example.myplants.feature_main.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,6 +70,13 @@ class EditPlantViewModel @Inject constructor(
     )
     val waterDays: State<MultipleSelectFieldState> = _waterDays
 
+    private val _imageState = mutableStateOf(
+        ImageViewState(
+            hint = "Add image"
+        )
+    )
+    val image: State<ImageViewState> = _imageState
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow
 
@@ -81,6 +93,7 @@ class EditPlantViewModel @Inject constructor(
                         sizeSelected(sizes.indexOf(plant.size))
                         waterAmountSelected(amounts.indexOf(plant.waterAmount))
                         datesSelected(plant.waterDays.map { it.name })
+                        imageSelected(Uri.parse(plant.image))
                     }
                 }
             }
@@ -101,6 +114,7 @@ class EditPlantViewModel @Inject constructor(
             is EditPlantEvent.DatesSelected -> datesSelected(event.value)
             is EditPlantEvent.TimeFocusChanged -> {}
             is EditPlantEvent.TimeSelected -> {}
+            is EditPlantEvent.ImagePicked -> imageSelected(event.uri)
             EditPlantEvent.PlantSaved -> savePlant()
         }
     }
@@ -177,6 +191,12 @@ class EditPlantViewModel @Inject constructor(
         )
     }
 
+    private fun imageSelected(uri: Uri?) {
+        _imageState.value = image.value.copy(
+            hint = if (uri == null) "Add image" else "Change image",
+            uri = uri
+        )
+    }
 
     private fun savePlant() {
         viewModelScope.launch {
@@ -184,7 +204,7 @@ class EditPlantViewModel @Inject constructor(
                 val plant = Plant(
                     name = name.value.text,
                     description = description.value.text,
-                    image = "",
+                    image = image.value.uri.toString(),
                     waterDays = waterDays.value.options
                         .filter { it.isSelected }
                         .map { DayOfWeek.valueOf(it.title) },

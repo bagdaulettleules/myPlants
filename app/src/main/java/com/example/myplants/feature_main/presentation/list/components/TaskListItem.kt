@@ -52,7 +52,7 @@ fun TaskListItem(
     description: String = "",
     imageUrl: String = "",
     waterAmountText: String = "",
-    isUpcoming: Boolean = false,
+    dueDate: String = "",
     isWatered: Boolean = true,
     onItemClick: () -> Unit,
     onItemLongLick: () -> Unit,
@@ -129,30 +129,28 @@ fun TaskListItem(
                         )
                     }
 
-                    if (isUpcoming) {
-                        Box(
-                            modifier = Modifier
-                                .wrapContentWidth()
-                                .height(20.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    shape = RoundedCornerShape(4.dp)
-                                )
-                                .padding(
-                                    start = 6.dp,
-                                    top = 2.dp,
-                                    end = 6.dp,
-                                    bottom = 2.dp
-                                )
-                                .layoutId("dueDateText")
-                        ) {
-
-                            Text(
-                                text = "Today",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSecondary
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .height(20.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                shape = RoundedCornerShape(4.dp)
                             )
-                        }
+                            .padding(
+                                start = 6.dp,
+                                top = 2.dp,
+                                end = 6.dp,
+                                bottom = 2.dp
+                            )
+                            .layoutId("dueDateText")
+                    ) {
+
+                        Text(
+                            text = dueDate,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondary
+                        )
                     }
                 }
             }
