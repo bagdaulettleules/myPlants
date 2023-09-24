@@ -42,10 +42,13 @@ class MainActivity : ComponentActivity() {
 
                         composable(route = Screen.TasksList.route) {
                             val viewModel = hiltViewModel<TasksListViewModel>()
+                            val listState = viewModel.state
+                            val dialogState = viewModel.dialogState
+
                             TasksListScreen(
                                 navController = navController,
-                                state = viewModel.state.value,
-                                dialogState = viewModel.dialogState.value,
+                                state = listState.value,
+                                dialogState = dialogState.value,
                                 onEvent = viewModel::onEvent
                             )
                         }
@@ -85,13 +88,21 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             val viewModel = hiltViewModel<EditPlantViewModel>()
+                            val nameState = viewModel.name
+                            val descriptionState = viewModel.description
+                            val sizeState = viewModel.size
+                            val waterAmountState = viewModel.waterAmount
+                            val waterDaysState = viewModel.waterDays
+                            val imageState = viewModel.image
+
                             EditPlantScreen(
                                 navController = navController,
-                                nameState = viewModel.name.value,
-                                descriptionState = viewModel.description.value,
-                                sizeState = viewModel.size.value,
-                                waterAmountState = viewModel.waterAmount.value,
-                                waterDaysState = viewModel.waterDays.value,
+                                nameState = nameState.value,
+                                descriptionState = descriptionState.value,
+                                sizeState = sizeState.value,
+                                waterAmountState = waterAmountState.value,
+                                waterDaysState = waterDaysState.value,
+                                imageState = imageState.value,
                                 onEvent = viewModel::onEvent,
                                 eventFlow = viewModel.eventFlow
                             )

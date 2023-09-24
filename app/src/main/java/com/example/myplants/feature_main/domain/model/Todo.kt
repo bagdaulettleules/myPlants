@@ -14,4 +14,6 @@ data class Todo(
     val taskId: Long,
     val isDone: Boolean = false,
     val dueDateTs: Long
-)
+) {
+    var dueDateText: String = ""
+}

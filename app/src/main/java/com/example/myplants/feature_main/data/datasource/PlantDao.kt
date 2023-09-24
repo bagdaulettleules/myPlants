@@ -25,7 +25,8 @@ interface PlantDao {
                 p.size,
                 t.id as taskId, 
                 t.isDone, 
-                t.dueDateTs 
+                t.dueDateTs,
+                '' as dueDateText
             from plant p 
             join task t on t.plantId = p.id """
     )

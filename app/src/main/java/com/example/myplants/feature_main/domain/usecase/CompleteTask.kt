@@ -14,6 +14,7 @@ class CompleteTask(
         taskRepository.save(
             task.copy(
                 isDone = true,
+                dueDateTs = System.currentTimeMillis(),
                 updateTs = System.currentTimeMillis()
             )
         )

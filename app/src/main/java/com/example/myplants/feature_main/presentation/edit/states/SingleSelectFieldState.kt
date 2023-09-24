@@ -1,4 +1,4 @@
-package com.example.myplants.feature_main.presentation.edit
+package com.example.myplants.feature_main.presentation.edit.states
 
 data class SingleSelectFieldState(
     val text: String = "",
