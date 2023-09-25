@@ -14,6 +14,11 @@ import com.example.myplants.feature_main.domain.usecase.GetPlant
 import com.example.myplants.feature_main.domain.usecase.GetTask
 import com.example.myplants.feature_main.domain.usecase.PlantUseCase
 import com.example.myplants.feature_main.domain.usecase.SavePlant
+import com.example.myplants.feature_notification.data.repository.NotificationRepositoryImpl
+import com.example.myplants.feature_notification.domain.repository.NotificationRepository
+import com.example.myplants.feature_notification.domain.usecase.GetAllNotifications
+import com.example.myplants.feature_notification.domain.usecase.NotificationUseCase
+import com.example.myplants.feature_notification.domain.usecase.SaveNotification
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,6 +48,11 @@ object AppModule {
     }
 
     @Provides
+    fun provideNotificationRepository(database: PlantDatabase): NotificationRepository {
+        return NotificationRepositoryImpl(database.notificationDao)
+    }
+
+    @Provides
     fun providePlantUseCase(
         taskRepository: TaskRepository,
         plantRepository: PlantRepository
@@ -54,6 +64,16 @@ object AppModule {
             savePlant = SavePlant(taskRepository, plantRepository),
             deletePlant = DeletePlant(plantRepository),
             completeTask = CompleteTask(taskRepository, plantRepository)
+        )
+    }
+
+    @Provides
+    fun provideNotificationUseCase(
+        notificationRepository: NotificationRepository
+    ): NotificationUseCase {
+        return NotificationUseCase(
+            getAll = GetAllNotifications(notificationRepository),
+            save = SaveNotification(notificationRepository)
         )
     }
 }

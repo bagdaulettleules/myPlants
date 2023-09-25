@@ -2,6 +2,7 @@ package com.example.myplants.feature_main.data
 
 import androidx.room.TypeConverter
 import com.example.myplants.feature_main.domain.model.Size
+import com.example.myplants.feature_notification.domain.model.NotificationType
 import java.time.DayOfWeek
 
 class CustomTypeConverters {
@@ -34,5 +35,15 @@ class CustomTypeConverters {
     @TypeConverter
     fun toListString(value: String): List<String> {
         return value.split(",")
+    }
+
+    @TypeConverter
+    fun fromNotificationType(notificationType: NotificationType): String {
+        return notificationType.name
+    }
+
+    @TypeConverter
+    fun toNotificationType(name: String): NotificationType {
+        return enumValueOf(name)
     }
 }

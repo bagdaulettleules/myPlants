@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskDao {
 
     @Transaction
-    @Query("select * from task order by dueDateTs desc")
+    @Query("select * from task")
     fun getAll(): Flow<List<Task>>
 
     @Query("select * from task where id = :id")
